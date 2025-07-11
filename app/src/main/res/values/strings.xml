@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Ticketzy</string>
+
+    <string name="button_text_home_new_sale">Nova Venda</string>
+    <string name="button_text_home_charge">Cobrar</string>
+    <string name="button_text_home_reports">Relatórios</string>
+    <string name="button_text_home_config">Configurações</string>
+
+    <string name="text_home_version">v %s</string>
+
+    <string name="text_sale_price">R$ %.2f</string>
+
+</resources>
