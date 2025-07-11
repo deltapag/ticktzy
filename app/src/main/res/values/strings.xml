@@ -10,4 +10,15 @@
 
     <string name="text_sale_price">R$ %.2f</string>
 
+    <string name="button_config_nova_venda">Layout Nova Venda</string>
+    <string name="button_config_cobrar">Layout Cobrança</string>
+    <string name="button_config_relatorios">Layout Relatórios</string>
+    <string name="button_config_search_bar">SearchBar</string>
+    <string name="button_config_payment_bar">PaymentBar</string>
+    <string name="button_config_lista_produtos">Lista de Produtos</string>
+    <string name="button_config_product_adapter">ProductAdapter</string>
+    <string name="button_config_product_view">ProductView</string>
+    <string name="button_config_terminal">Terminal</string>
+    <string name="button_config_sitef">SITEF</string>
+
 </resources>
