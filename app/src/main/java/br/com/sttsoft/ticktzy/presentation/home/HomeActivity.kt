@@ -1,4 +1,4 @@
-package br.com.sttsoft.ticktzy.presentation.home.ui
+package br.com.sttsoft.ticktzy.presentation.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,7 @@ import br.com.sttsoft.ticktzy.BuildConfig
 import br.com.sttsoft.ticktzy.R
 
 import br.com.sttsoft.ticktzy.databinding.ActivityHomeBinding
+import br.com.sttsoft.ticktzy.presentation.charge.ChargeActivity
 import br.com.sttsoft.ticktzy.presentation.config.ConfigActivity
 import br.com.sttsoft.ticktzy.presentation.sale.ui.SaleActivity
 
@@ -19,8 +20,7 @@ class HomeActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-
+        
         setVersionCode()
         setListeners()
     }
@@ -35,7 +35,7 @@ class HomeActivity: AppCompatActivity() {
         }
 
         binding.btnCharge.setOnClickListener {
-
+            startActivity(Intent(this, ChargeActivity::class.java))
         }
 
         binding.btnReports.setOnClickListener {
@@ -46,7 +46,4 @@ class HomeActivity: AppCompatActivity() {
             startActivity(Intent(this, ConfigActivity::class.java))
         }
     }
-
-
-
 }

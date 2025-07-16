@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -15,7 +16,7 @@
         android:theme="@style/Theme.Ticketzy.NoActionBar"
         tools:targetApi="31">
 
-        <activity android:name=".presentation.home.ui.HomeActivity"
+        <activity android:name=".presentation.base.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -23,10 +24,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".presentation.home.HomeActivity"
+            android:exported="true"/>
+
         <activity android:name=".presentation.sale.ui.SaleActivity"
             android:exported="true"/>
 
         <activity android:name=".presentation.config.ConfigActivity"
+            android:exported="true"/>
+
+        <activity android:name=".presentation.charge.ChargeActivity"
             android:exported="true"/>
 
     </application>

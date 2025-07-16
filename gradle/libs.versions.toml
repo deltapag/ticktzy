@@ -8,7 +8,7 @@ espressoCore = "3.6.1"
 appcompat = "1.7.1"
 material = "1.12.0"
 retrofit = "3.0.0"
-retrofitGson = "3.0.0"
+lottie = "6.6.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -18,7 +18,8 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofitGson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofitGson" }
+retrofitGson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+lottie = { group = "com.airbnb.android", name = "lottie", version.ref="lottie"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

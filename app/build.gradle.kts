@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.SigningConfig
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -16,7 +18,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "urlDelta",  "\"https://pos.deltapag.com.br/\"")
+
+
     }
 
     buildTypes {
@@ -26,7 +29,14 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("Boolean", "useAPI", "true")
+            buildConfigField("String", "urlDelta",  "\"https://pos.deltapag.com.br/\"")
         }
+        debug {
+            buildConfigField("Boolean", "useAPI", "false")
+            buildConfigField("String", "urlDelta",  "\"https://pos.deltapag.com.br/\"")
+        }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -48,9 +58,11 @@ dependencies {
     implementation(libs.material)
 
     implementation("com.sunmi:printerlibrary:1.0.18")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     implementation(libs.retrofit)
     implementation(libs.retrofitGson)
+    implementation(libs.lottie)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

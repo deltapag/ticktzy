@@ -10,4 +10,6 @@
 
     <string name="text_sale_price">R$ %.2f</string>
 
+    <string name="error_value_zero">Valor não pode ser igual a R$0,00</string>
+
 </resources>
