@@ -2,16 +2,18 @@ package br.com.sttsoft.ticktzy.presentation.home
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
 import br.com.sttsoft.ticktzy.BuildConfig
 import br.com.sttsoft.ticktzy.R
 
 import br.com.sttsoft.ticktzy.databinding.ActivityHomeBinding
+import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.presentation.charge.ChargeActivity
 import br.com.sttsoft.ticktzy.presentation.config.ConfigActivity
 import br.com.sttsoft.ticktzy.presentation.sale.ui.SaleActivity
+import br.com.sttsoft.ticktzy.repository.local.product
 
-class HomeActivity: AppCompatActivity() {
+class HomeActivity: BaseActivity() {
 
     private val binding: ActivityHomeBinding by lazy {
         ActivityHomeBinding.inflate(layoutInflater)

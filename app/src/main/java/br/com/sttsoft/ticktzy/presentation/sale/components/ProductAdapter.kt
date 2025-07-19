@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.extensions.setImageFromBase64
+import br.com.sttsoft.ticktzy.extensions.toReal
 import br.com.sttsoft.ticktzy.repository.local.product
 
 class ProductAdapter(
@@ -28,7 +29,7 @@ class ProductAdapter(
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val item = filteredList[position]
-        holder.tvTitle.text = item.name
+        holder.tvTitle.text = item.price.toReal()
 
         holder.tvBadge.text = item.quantity.toString()
         holder.tvBadge.visibility = if (item.quantity > 0) View.VISIBLE else View.GONE
@@ -41,9 +42,12 @@ class ProductAdapter(
             holder.tvName.text = item.name
             holder.tvName.visibility = View.VISIBLE
             holder.ivProduct.visibility = View.GONE
+
+            holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
             holder.tvName.visibility = if (isSelected) View.GONE else View.VISIBLE
+
         } else {
-            //holder.ivProduct.setImageFromBase64(item.photo)
+            holder.ivProduct.setImageFromBase64(item.photo)
             holder.tvName.visibility = View.GONE
             holder.ivProduct.visibility = View.VISIBLE
             holder.ivProduct.alpha = if (isSelected) 0.5f else 1f

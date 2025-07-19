@@ -1,15 +1,15 @@
 package br.com.sttsoft.ticktzy.domain
 
 import android.util.Log
-import br.com.sttsoft.ticktzy.repository.remote.InfoRepository
+import br.com.sttsoft.ticktzy.repository.remote.repositorys.InfoRepository
 import br.com.sttsoft.ticktzy.repository.remote.MSCall
-import br.com.sttsoft.ticktzy.repository.remote.request.Terminal
+import br.com.sttsoft.ticktzy.repository.remote.request.TerminalWrapper
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class GetInfosUseCase(private var infosRequest: Terminal) {
+class GetInfosUseCase(private var infosRequest: TerminalWrapper) {
 
     fun invoke(
         onSuccess: (InfoResponse?) -> Unit,

@@ -1,6 +1,7 @@
 package br.com.sttsoft.ticktzy.repository.local
 
 data class product(
+    val cnpj: String,
     val name: String,
     val photo: String,
     val price: Double,

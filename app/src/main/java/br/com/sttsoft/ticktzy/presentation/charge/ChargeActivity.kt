@@ -1,5 +1,6 @@
 package br.com.sttsoft.ticktzy.presentation.charge
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -7,9 +8,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivityChargeBinding
+import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import java.text.DecimalFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-class ChargeActivity: AppCompatActivity() {
+
+class ChargeActivity: BaseActivity() {
 
     private val binding: ActivityChargeBinding by lazy {
         ActivityChargeBinding.inflate(layoutInflater)
@@ -93,4 +98,5 @@ class ChargeActivity: AppCompatActivity() {
         val formattedValue = decimalFormat.format(currentValue / 100.0)
         binding.tvValor.text = formattedValue
     }
+
 }

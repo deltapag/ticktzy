@@ -17,10 +17,10 @@ class TerminalnfosUseCase {
         return Terminal(
             Data = sdfData.format(now),
             Hora = sdfHora.format(now),
-            Fabricante = Build.MANUFACTURER ?: "Desconhecido",
-            Modelo = Build.MODEL ?: "P2",
+            //Fabricante = Build.MANUFACTURER ?: "Desconhecido",
+            //Modelo = Build.MODEL ?: "P2",
             NumeroSerie = getSerialFromSystem(),
-            VrsApp = BuildConfig.VERSION_NAME,
+            VrsApp = "v"+ BuildConfig.VERSION_NAME,
             VrsCliSitef = "2.0.0",
             TipoConexao = "WIFI",
             MacAddress = "00:11:22:33:44:55",

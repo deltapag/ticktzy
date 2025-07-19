@@ -11,13 +11,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivitySaleBinding
+import br.com.sttsoft.ticktzy.domain.GetProductUseCase
+import br.com.sttsoft.ticktzy.domain.SitefUseCase
+import br.com.sttsoft.ticktzy.extensions.getFromPrefs
+import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.presentation.sale.components.ProductAdapter
 import br.com.sttsoft.ticktzy.repository.local.product
+import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import com.sunmi.peripheral.printer.InnerPrinterCallback
 import com.sunmi.peripheral.printer.InnerPrinterManager
 import com.sunmi.peripheral.printer.SunmiPrinterService
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
-class SaleActivity: AppCompatActivity() {
+class SaleActivity: BaseActivity() {
 
     private val binding: ActivitySaleBinding by lazy {
         ActivitySaleBinding.inflate(layoutInflater)
@@ -27,14 +35,7 @@ class SaleActivity: AppCompatActivity() {
 
     private lateinit var adapter: ProductAdapter
 
-    private val productList: List<product> = listOf(
-        product(name = "Frango", photo = "asd", price = 1.0, quantity = 0, isSelected = false),
-        product(name = "Lata", photo = "", price = 1.0, quantity = 0, isSelected = false),
-        product(name = "Batata", photo = "", price = 1.0, quantity = 0, isSelected = false),
-        product(name = "Teste", photo = "", price = 1.0, quantity = 0, isSelected = false),
-        product(name = "Bebida", photo = "", price = 1.0, quantity = 0, isSelected = false),
-        product(name = "Comida", photo = "", price = 1.0, quantity = 0, isSelected = false)
-    )
+    private lateinit var productList: List<product>
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
@@ -48,9 +49,10 @@ class SaleActivity: AppCompatActivity() {
 
         initActivityResultLaucher()
 
-        setAdapter()
         setSearchBarListener()
         setOnClickListeners()
+
+        getProducts()
     }
 
     fun initPrinter() {
@@ -72,6 +74,34 @@ class SaleActivity: AppCompatActivity() {
                 // Trate o resultado aqui
             }
         }
+    }
+
+    fun getProducts() {
+        showLoading()
+        val useCase = GetProductUseCase()
+
+        val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
+
+        Thread {
+            infos?.let {
+                useCase.invoke(
+                    infos.Pagamento.Subadquirencia[0].cnpj,
+                    onSuccess = {
+                        runOnUiThread {
+                            it?.let {
+                                productList = it.results
+                                setAdapter()
+                                hideLoading()
+                            }
+                        }
+                    },
+                    onError = { error ->
+                        hideLoading()
+                        Log.e("SaleActivity", "getProducts: ", error)
+                    }
+                )
+            }
+        }.start()
     }
 
     fun setAdapter() {
@@ -96,7 +126,9 @@ class SaleActivity: AppCompatActivity() {
 
         binding.paymentBar.setOnCashClick {
             try {
-                activityResultLauncher.launch(advanceToPayment(adapter.getTotal(), 0))
+                val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
+
+                activityResultLauncher.launch(infos?.let { SitefUseCase().payment(it, adapter.getTotal(), "3") })
             } catch (e: Exception) {
                 Log.e("SALEC", "setOnClickListeners: ", )
             }
@@ -129,12 +161,5 @@ class SaleActivity: AppCompatActivity() {
                 sendRAWData(boldOff, null)
             }
         }
-    }
-
-    fun advanceToPayment(total: Double, modality: Int) : Intent{
-        var i = Intent("br.com.softwareexpress.sitef.msitef.ACTIVITY_CLISITEF")
-
-
-        return i
     }
 }

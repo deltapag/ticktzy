@@ -31,10 +31,12 @@ android {
             )
             buildConfigField("Boolean", "useAPI", "true")
             buildConfigField("String", "urlDelta",  "\"https://pos.deltapag.com.br/\"")
+            buildConfigField("String", "urlAPI",  "\"https://parseapi.back4app.com/\"")
         }
         debug {
-            buildConfigField("Boolean", "useAPI", "false")
+            buildConfigField("Boolean", "useAPI", "true")
             buildConfigField("String", "urlDelta",  "\"https://pos.deltapag.com.br/\"")
+            buildConfigField("String", "urlAPI",  "\"https://parseapi.back4app.com/\"")
         }
 
     }
@@ -57,12 +59,13 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
-    implementation("com.sunmi:printerlibrary:1.0.18")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation(libs.printer)
+    implementation(libs.logInterceptor)
 
     implementation(libs.retrofit)
     implementation(libs.retrofitGson)
     implementation(libs.lottie)
+    implementation(libs.gson)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

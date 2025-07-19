@@ -6,6 +6,10 @@
     <string name="button_text_home_reports">Relatórios</string>
     <string name="button_text_home_config">Configurações</string>
 
+    <string name="button_text_config_sitef_conection_test">Teste de conexão SITEF</string>
+    <string name="button_text_config_sitef_token_config">Config. Token SITEF</string>
+
+
     <string name="text_home_version">v %s</string>
 
     <string name="text_sale_price">R$ %.2f</string>

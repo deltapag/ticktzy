@@ -62,8 +62,8 @@
 
     <TextView
         android:id="@+id/btn_charge"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/button_home_charge"
         android:gravity="center|center_horizontal"
@@ -73,6 +73,7 @@
         android:textColor="#FFFFFF"
         android:textSize="28sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/btn_new_sale"
         app:layout_constraintStart_toStartOf="@+id/btn_new_sale"
         app:layout_constraintTop_toBottomOf="@+id/btn_new_sale" />
 
@@ -89,6 +90,7 @@
         android:textColor="#FFFFFF"
         android:textSize="22sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/btn_new_sale"
         app:layout_constraintTop_toBottomOf="@+id/btn_new_sale" />
 
