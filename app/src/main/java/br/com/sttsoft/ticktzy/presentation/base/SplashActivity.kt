@@ -2,15 +2,20 @@ package br.com.sttsoft.ticktzy.presentation.base
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import br.com.sttsoft.ticktzy.BuildConfig
 import br.com.sttsoft.ticktzy.databinding.ActivitySplashBinding
 import br.com.sttsoft.ticktzy.domain.GetInfosUseCase
+import br.com.sttsoft.ticktzy.domain.GetProductsUseCase
+import br.com.sttsoft.ticktzy.domain.ProductCacheUseCase
+import br.com.sttsoft.ticktzy.domain.ProductSyncUseCase
 import br.com.sttsoft.ticktzy.domain.TerminalnfosUseCase
 import br.com.sttsoft.ticktzy.extensions.saveToPrefs
 import br.com.sttsoft.ticktzy.presentation.home.HomeActivity
 import br.com.sttsoft.ticktzy.repository.remote.request.TerminalWrapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SplashActivity: BaseActivity() {
 
@@ -27,26 +32,42 @@ class SplashActivity: BaseActivity() {
         if (!BuildConfig.useAPI) {
             startActivity(Intent(this, HomeActivity::class.java))
         } else {
-            val terminal = TerminalnfosUseCase().invoke()
-            val useCase = GetInfosUseCase(TerminalWrapper(terminal))
+            lifecycleScope.launch {
+                try {
+                    val infos = TerminalnfosUseCase().invoke()
+                    val useCaseInfos = GetInfosUseCase(TerminalWrapper(infos))
 
-            Thread {
-                useCase.invoke(
-                    onSuccess = {
-                        runOnUiThread {
-                            it.saveToPrefs(this, "SITEF_INFOS")
-                            binding.tvStatus.text = "Sucesso! Iniciando..."
-                            startActivity(Intent(this, HomeActivity::class.java))
-                            finish()
-                        }
-                    },
-                    onError = { error ->
-                        runOnUiThread {
-                            binding.tvStatus.text = "Erro ao obter dados: ${error.message}"
+                    val infosResponse = withContext(Dispatchers.IO) {
+                        useCaseInfos.invoke()
+                    }
+
+                    infosResponse?.saveToPrefs(this@SplashActivity, "SITEF_INFOS")
+                    binding.tvStatus.text = "Coletando produtos..."
+
+                    val cnpj = infosResponse
+                        ?.Pagamento
+                        ?.Subadquirencia
+                        ?.firstOrNull()
+                        ?.cnpj
+
+                    // Agora chama a coleta de produtos
+                    if (cnpj != null) {
+                        val produtos = withContext(Dispatchers.IO) {
+                            ProductSyncUseCase(
+                                ProductCacheUseCase(this@SplashActivity),
+                                GetProductsUseCase()
+                            ).sync(cnpj)
                         }
                     }
-                )
-            }.start()
+
+                    binding.tvStatus.text = "Sucesso! Iniciando..."
+                    startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
+                    finish()
+
+                } catch (e: Exception) {
+                    binding.tvStatus.text = "Erro ao obter dados: ${e.message}"
+                }
+            }
         }
     }
 

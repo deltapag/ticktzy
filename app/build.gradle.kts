@@ -34,7 +34,7 @@ android {
             buildConfigField("String", "urlAPI",  "\"https://parseapi.back4app.com/\"")
         }
         debug {
-            buildConfigField("Boolean", "useAPI", "true")
+            buildConfigField("Boolean", "useAPI", "false")
             buildConfigField("String", "urlDelta",  "\"https://pos.deltapag.com.br/\"")
             buildConfigField("String", "urlAPI",  "\"https://parseapi.back4app.com/\"")
         }

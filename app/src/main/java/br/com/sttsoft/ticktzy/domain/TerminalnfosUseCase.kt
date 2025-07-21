@@ -17,8 +17,8 @@ class TerminalnfosUseCase {
         return Terminal(
             Data = sdfData.format(now),
             Hora = sdfHora.format(now),
-            //Fabricante = Build.MANUFACTURER ?: "Desconhecido",
-            //Modelo = Build.MODEL ?: "P2",
+            Fabricante = Build.MANUFACTURER ?: "Desconhecido",
+            Modelo = Build.MODEL ?: "Desconhecido",
             NumeroSerie = getSerialFromSystem(),
             VrsApp = "v"+ BuildConfig.VERSION_NAME,
             VrsCliSitef = "2.0.0",

@@ -58,7 +58,7 @@ class SitefUseCase {
         return i
     }
 
-    fun payment(infos: InfoResponse, valor: Double, modalidade: String): Intent {
+    fun payment(infos: InfoResponse, valor: Double, modalidade: String, isPix: Boolean): Intent {
         val calendar = Calendar.getInstance()
 
         val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())

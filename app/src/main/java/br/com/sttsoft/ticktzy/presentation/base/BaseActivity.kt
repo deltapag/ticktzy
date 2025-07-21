@@ -2,6 +2,7 @@ package br.com.sttsoft.ticktzy.presentation.base
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 
@@ -30,5 +31,14 @@ abstract class BaseActivity: AppCompatActivity() {
 
     fun isLoadingVisible(): Boolean {
         return loadingDialog?.isVisible == true
+    }
+
+    fun showToast(message: String, isLongMessage: Boolean = false) {
+        if (isLongMessage) {
+            Toast.makeText(this@BaseActivity, message, Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(this@BaseActivity, message, Toast.LENGTH_SHORT).show()
+        }
+
     }
 }

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivityChargeBinding
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
+import br.com.sttsoft.ticktzy.presentation.base.PaymentTypeChooseDialog
 import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -74,7 +75,14 @@ class ChargeActivity: BaseActivity() {
 
         binding.llPay.setOnClickListener {
             if (verifyBeforePay()) {
-
+                val dialog = PaymentTypeChooseDialog ({ tipo ->
+                    when (tipo) {
+                        "debit" -> { /* ação de débito */ }
+                        "credit" -> { /* ação de crédito */ }
+                        "money" -> {}
+                    }
+                }, true)
+                dialog.show(supportFragmentManager, "CardTypeDialog")
             }
         }
     }

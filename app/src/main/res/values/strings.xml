@@ -8,6 +8,8 @@
 
     <string name="button_text_config_sitef_conection_test">Teste de conexão SITEF</string>
     <string name="button_text_config_sitef_token_config">Config. Token SITEF</string>
+    <string name="button_text_config_test_printer">Teste de impressora</string>
+    <string name="button_text_config_product_refresh">Buscar produtos</string>
 
 
     <string name="text_home_version">v %s</string>
@@ -15,5 +17,17 @@
     <string name="text_sale_price">R$ %.2f</string>
 
     <string name="error_value_zero">Valor não pode ser igual a R$0,00</string>
+
+    <string name="cancel">CANCELAR</string>
+
+    <string name="dialog_payment_type_title">SELECIONE A FORMA DO PAGAMENTO</string>
+
+    <string name="text_dialog_payment_type_choose_debit_card">CARTÃO DE DÉBITO</string>
+    <string name="text_dialog_payment_type_choose_credit_card">CARTÃO DE CRÉDITO</string>
+    <string name="text_dialog_payment_type_choose_money">DINHEIRO</string>
+
+    <string name="category_config_sitef"> - SITEF - </string>
+    <string name="category_config_printer"> - Impressora - </string>
+    <string name="category_config_products"> - Produtos - </string>
 
 </resources>

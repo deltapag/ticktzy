@@ -3,15 +3,29 @@ package br.com.sttsoft.ticktzy.presentation.config
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import br.com.sttsoft.ticktzy.databinding.ActivityConfigBinding
+import br.com.sttsoft.ticktzy.domain.GetProductsUseCase
+import br.com.sttsoft.ticktzy.domain.PrinterUseCase
+import br.com.sttsoft.ticktzy.domain.ProductCacheUseCase
+import br.com.sttsoft.ticktzy.domain.ProductSyncUseCase
 import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
+import br.com.sttsoft.ticktzy.presentation.base.PaymentTypeChooseDialog
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
+import com.sunmi.peripheral.printer.InnerPrinterCallback
+import com.sunmi.peripheral.printer.InnerPrinterManager
+import com.sunmi.peripheral.printer.SunmiPrinterService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ConfigActivity: BaseActivity() {
 
@@ -21,6 +35,8 @@ class ConfigActivity: BaseActivity() {
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
+    private var sunmiPrinterService: SunmiPrinterService? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -29,7 +45,21 @@ class ConfigActivity: BaseActivity() {
 
         initActivityResultLaucher()
 
+        initPrinter()
+
         setListeners()
+    }
+
+    fun initPrinter() {
+        InnerPrinterManager.getInstance().bindService(this, object : InnerPrinterCallback() {
+            override fun onConnected(service: SunmiPrinterService) {
+                sunmiPrinterService = service
+            }
+
+            override fun onDisconnected() {
+                sunmiPrinterService = null
+            }
+        })
     }
 
     fun initActivityResultLaucher() {
@@ -61,6 +91,45 @@ class ConfigActivity: BaseActivity() {
             infos?.let {
                 var i = SitefUseCase().tokenConfig(it)
                 activityResultLauncher.launch(i)
+            }
+        }
+
+        binding.btnTestPrinter.setOnClickListener {
+            PrinterUseCase(sunmiPrinterService).testPrinter()
+        }
+
+        binding.btnProductRefresh.setOnClickListener {
+            val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
+
+            showLoading()
+
+            lifecycleScope.launch {
+                try {
+                    val cnpj = infos
+                        ?.Pagamento
+                        ?.Subadquirencia
+                        ?.firstOrNull()
+                        ?.cnpj
+
+                    cnpj?.let {
+                        val produtos = withContext(Dispatchers.IO) {
+                            ProductSyncUseCase(
+                                ProductCacheUseCase(this@ConfigActivity),
+                                GetProductsUseCase()
+                            ).sync(it)
+                        }
+
+                        hideLoading()
+
+                        produtos.also {
+                            showToast("Atualizado com ${it.size} produtos", true)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("CONFIG", "Sync Products: ", e)
+                    showToast("Erro ao buscar produtos!", true)
+                    hideLoading()
+                }
             }
         }
     }

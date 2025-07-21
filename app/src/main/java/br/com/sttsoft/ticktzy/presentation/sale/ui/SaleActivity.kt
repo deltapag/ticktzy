@@ -3,27 +3,24 @@ package br.com.sttsoft.ticktzy.presentation.sale.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivitySaleBinding
-import br.com.sttsoft.ticktzy.domain.GetProductUseCase
+import br.com.sttsoft.ticktzy.domain.ProductCacheUseCase
 import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
+import br.com.sttsoft.ticktzy.presentation.base.PaymentTypeChooseDialog
 import br.com.sttsoft.ticktzy.presentation.sale.components.ProductAdapter
 import br.com.sttsoft.ticktzy.repository.local.product
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import com.sunmi.peripheral.printer.InnerPrinterCallback
 import com.sunmi.peripheral.printer.InnerPrinterManager
 import com.sunmi.peripheral.printer.SunmiPrinterService
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class SaleActivity: BaseActivity() {
 
@@ -39,9 +36,13 @@ class SaleActivity: BaseActivity() {
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
+    private var infos: InfoResponse? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        infos = this.getFromPrefs("SITEF_INFOS")
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {override fun handleOnBackPressed() {} })
 
@@ -55,7 +56,7 @@ class SaleActivity: BaseActivity() {
         getProducts()
     }
 
-    fun initPrinter() {
+    private fun initPrinter() {
         InnerPrinterManager.getInstance().bindService(this, object : InnerPrinterCallback() {
             override fun onConnected(service: SunmiPrinterService) {
                 sunmiPrinterService = service
@@ -67,7 +68,7 @@ class SaleActivity: BaseActivity() {
         })
     }
 
-    fun initActivityResultLaucher() {
+    private fun initActivityResultLaucher() {
         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
@@ -76,35 +77,18 @@ class SaleActivity: BaseActivity() {
         }
     }
 
-    fun getProducts() {
+    private fun getProducts() {
         showLoading()
-        val useCase = GetProductUseCase()
+        val produtos = ProductCacheUseCase(this).lerProdutos()
 
-        val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
-
-        Thread {
-            infos?.let {
-                useCase.invoke(
-                    infos.Pagamento.Subadquirencia[0].cnpj,
-                    onSuccess = {
-                        runOnUiThread {
-                            it?.let {
-                                productList = it.results
-                                setAdapter()
-                                hideLoading()
-                            }
-                        }
-                    },
-                    onError = { error ->
-                        hideLoading()
-                        Log.e("SaleActivity", "getProducts: ", error)
-                    }
-                )
-            }
-        }.start()
+        if (produtos.isNotEmpty()) {
+            productList = produtos
+            setAdapter()
+            hideLoading()
+        }
     }
 
-    fun setAdapter() {
+    private fun setAdapter() {
         binding.rclProducts.layoutManager = GridLayoutManager(this, 3)
 
         adapter = ProductAdapter(productList) { total ->
@@ -114,52 +98,51 @@ class SaleActivity: BaseActivity() {
         binding.rclProducts.adapter = adapter
     }
 
-    fun setSearchBarListener() {
+    private fun setSearchBarListener() {
         binding.searchBar.addOnTextChangedListener { query -> adapter.filter(query) }
     }
 
-    fun setOnClickListeners() {
+    private fun setOnClickListeners() {
 
         binding.btnBack.setOnClickListener {
             finish()
         }
 
         binding.paymentBar.setOnCashClick {
-            try {
-                val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
+            if (verifyTotal()) {
 
-                activityResultLauncher.launch(infos?.let { SitefUseCase().payment(it, adapter.getTotal(), "3") })
-            } catch (e: Exception) {
-                Log.e("SALEC", "setOnClickListeners: ", )
             }
         }
 
         binding.paymentBar.setOnPixClick {
-            sunmiPrinterService?.apply {
-                val boldOff = byteArrayOf(0x1B, 0x45, 0x00) // ESC E 0 → negrito OFF
-
-                sendRAWData(boldOff, null)
-
-                // Início da impressão
-                lineWrap(1, null) // pula linha
-
-                // Informações (centralizado, normal)
-                setAlignment(1, null) // 0=left, 1=center, 2=right
-                setFontSize(24f, null)
-                printText("Informações\n", null)
-                printText("NOME / OUTRAS INFOS\n\n", null)
-
-                // Texto principal (negrito e maior)
-                val boldOn = byteArrayOf(0x1B, 0x45, 0x01) // ESC E 1 → negrito ON
-
-                sendRAWData(boldOn, null)
-                setFontSize(36f, null)
-                printText("TICKET 5\n", null)
-
-                // Avança papel
-                lineWrap(5, null)
-                sendRAWData(boldOff, null)
+            if (verifyTotal()) {
+                generatePaymentIntent("", true)
             }
+        }
+
+        binding.paymentBar.setOnCardClick {
+            if (verifyTotal()) {
+                val dialog = PaymentTypeChooseDialog ({ tipo ->
+                    when (tipo) {
+                        "debit" -> { generatePaymentIntent("") }
+                        "credit" -> { generatePaymentIntent("") }
+                    }
+                }, false)
+                dialog.show(supportFragmentManager, "CardTypeDialog")
+            }
+        }
+    }
+
+    private fun generatePaymentIntent(modalidade: String, isPix: Boolean = false) {
+        activityResultLauncher.launch(infos?.let { SitefUseCase().payment(it, adapter.getTotal(), modalidade, isPix) })
+    }
+
+    private fun verifyTotal(): Boolean {
+        if (adapter.getTotal() == 0.0) {
+            showToast("Sem produtos adicionados!", true)
+            return false
+        } else {
+            return true
         }
     }
 }
