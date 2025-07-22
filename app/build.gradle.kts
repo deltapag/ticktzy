@@ -13,8 +13,8 @@ android {
         applicationId = "br.com.sttsoft.ticktzy"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -34,7 +34,7 @@ android {
             buildConfigField("String", "urlAPI",  "\"https://parseapi.back4app.com/\"")
         }
         debug {
-            buildConfigField("Boolean", "useAPI", "false")
+            buildConfigField("Boolean", "useAPI", "true")
             buildConfigField("String", "urlDelta",  "\"https://pos.deltapag.com.br/\"")
             buildConfigField("String", "urlAPI",  "\"https://parseapi.back4app.com/\"")
         }
@@ -60,6 +60,9 @@ dependencies {
     implementation(libs.material)
 
     implementation(libs.printer)
+
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+
     implementation(libs.logInterceptor)
 
     implementation(libs.retrofit)

@@ -43,73 +43,126 @@
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/btn_new_sale"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/button_home_new_sale"
-        android:padding="50dp"
-        android:text="@string/button_text_home_new_sale"
-        android:textColor="#FFFFFF"
-        android:textSize="45sp"
-        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-    <TextView
-        android:id="@+id/btn_charge"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_home_charge"
-        android:gravity="center|center_horizontal"
-        android:padding="30dp"
-        android:text="@string/button_text_home_charge"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/btn_new_sale"
-        app:layout_constraintStart_toStartOf="@+id/btn_new_sale"
-        app:layout_constraintTop_toBottomOf="@+id/btn_new_sale" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/btn_reports"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_home_reports"
-        android:gravity="center|center_horizontal"
-        android:padding="24dp"
-        android:text="@string/button_text_home_reports"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/btn_new_sale"
-        app:layout_constraintTop_toBottomOf="@+id/btn_new_sale" />
+            <TextView
+                android:id="@+id/btn_new_sale"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/button_home_new_sale"
+                android:padding="40dp"
+                android:text="@string/button_text_home_new_sale"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="45sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/btn_config"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_home_config"
-        android:gravity="center|center_horizontal"
-        android:padding="18dp"
-        android:text="@string/button_text_home_config"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/btn_reports"
-        app:layout_constraintStart_toStartOf="@+id/btn_charge"
-        app:layout_constraintTop_toBottomOf="@+id/btn_charge" />
+            <TextView
+                android:id="@+id/btn_charge"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_home_charge"
+                android:gravity="center|center_horizontal"
+                android:padding="25dp"
+                android:text="@string/button_text_home_charge"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/btn_new_sale"
+                app:layout_constraintStart_toStartOf="@+id/btn_new_sale"
+                app:layout_constraintTop_toBottomOf="@+id/btn_new_sale" />
+
+            <TextView
+                android:id="@+id/btn_administratives_functions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_home_charge"
+                android:backgroundTint="@color/blue_payment"
+                android:gravity="center|center_horizontal"
+                android:padding="25dp"
+                android:text="@string/button_text_home_administratives_functions"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/btn_new_sale"
+                app:layout_constraintStart_toStartOf="@+id/btn_new_sale"
+                app:layout_constraintTop_toBottomOf="@id/btn_charge" />
+
+            <TextView
+                android:id="@+id/btn_cashier_functions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_home_charge"
+                android:backgroundTint="@color/blue_cashier"
+                android:gravity="center|center_horizontal"
+                android:padding="25dp"
+                android:text="@string/button_text_home_cashier_functions"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/btn_new_sale"
+                app:layout_constraintStart_toStartOf="@+id/btn_new_sale"
+                app:layout_constraintTop_toBottomOf="@id/btn_administratives_functions" />
+
+            <TextView
+                android:id="@+id/btn_reports"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_home_reports"
+                android:gravity="center|center_horizontal"
+                android:padding="24dp"
+                android:text="@string/button_text_home_reports"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/btn_new_sale"
+                app:layout_constraintTop_toBottomOf="@+id/btn_new_sale" />
+
+            <TextView
+                android:id="@+id/btn_config"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_home_config"
+                android:gravity="center|center_horizontal"
+                android:padding="18dp"
+                android:text="@string/button_text_home_config"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/btn_reports"
+                app:layout_constraintStart_toStartOf="@id/btn_charge"
+                app:layout_constraintTop_toBottomOf="@id/btn_cashier_functions" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

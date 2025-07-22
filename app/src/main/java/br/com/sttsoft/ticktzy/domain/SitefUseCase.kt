@@ -21,8 +21,8 @@ class SitefUseCase {
 
         var i = Intent("br.com.softwareexpress.sitef.msitef.ACTIVITY_CLISITEF")
         i.putExtra("empresaSitef", "00000000")
-        i.putExtra("enderecoSitef", "tls-prod.fiservapp.com:443")
         infos?.apply {
+            i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
             i.putExtra("CNPJ_CPF", infos.Pagamento.Subadquirencia[0].cnpj)
         }
         i.putExtra("operador", "mSiTef")
@@ -71,8 +71,9 @@ class SitefUseCase {
 
         var i = Intent("br.com.softwareexpress.sitef.msitef.ACTIVITY_CLISITEF")
         i.putExtra("empresaSitef", "00000000")
-        i.putExtra("enderecoSitef", "tls-prod.fiservapp.com:443")
         infos?.apply {
+
+            i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
 
             i.putExtra("cnpj_automacao", infos.Pagamento.lojasSitef[0].cnpj)
             i.putExtra("CNPJ_CPF", infos.Pagamento.Subadquirencia[0].cnpj)
@@ -85,7 +86,7 @@ class SitefUseCase {
         i.putExtra("modalidade", modalidade)
         i.putExtra("valor", valor.toSitefFormat())
         i.putExtra("timeoutColeta", "30")
-        i.putExtra("comExterna", "4")
+        i.putExtra("comExterna", "0")
 
         return i
     }

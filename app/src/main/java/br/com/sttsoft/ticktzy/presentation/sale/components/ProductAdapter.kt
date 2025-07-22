@@ -101,4 +101,8 @@ class ProductAdapter(
     fun getTotal(): Double {
         return filteredList.sumOf { it.price * it.quantity }
     }
+
+    fun getSelectedProducts(): List<product> {
+        return filteredList.filter { it.quantity > 0 }
+    }
 }

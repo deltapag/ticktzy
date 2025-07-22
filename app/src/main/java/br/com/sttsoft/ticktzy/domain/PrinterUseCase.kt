@@ -1,6 +1,9 @@
 package br.com.sttsoft.ticktzy.domain
 
+import br.com.sttsoft.ticktzy.extensions.toReal
+import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import com.sunmi.peripheral.printer.SunmiPrinterService
+import java.util.Locale
 
 class PrinterUseCase(val printerService: SunmiPrinterService?) {
 
@@ -42,6 +45,41 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
 
             lineWrap(5, null)
             sendRAWData(boldOff, null)
+        }
+    }
+
+    fun ticketPrint(infos: InfoResponse, productName: String, productPrice: Double) {
+        printerService?.apply {
+            val boldOn = byteArrayOf(0x1B, 0x45, 0x01)
+            val boldOff = byteArrayOf(0x1B, 0x45, 0x00)
+
+            // Inicial
+            setAlignment(1, null) // Centralizado
+            sendRAWData(boldOff, null)
+            setFontSize(20f, null)
+            printText(infos.Pagamento.lojasSitef.firstOrNull()!!.nomeLoja+"\n", null)
+
+            lineWrap(1, null)
+
+            // Item comprado
+            sendRAWData(boldOn, null)
+            setFontSize(32f, null)
+            printText(productName.uppercase()+"\n", null)
+
+            sendRAWData(boldOff, null)
+            setFontSize(28f, null)
+            printText(productPrice.toReal(), null)
+
+            lineWrap(2, null)
+
+            // Rodapé
+            sendRAWData(boldOn, null)
+            setFontSize(20f, null)
+            printText("Cuide bem destas fichas!\n", null)
+            printText("São os comprovantes do seu consumo\n", null)
+            sendRAWData(boldOff, null)
+
+            lineWrap(4, null)
         }
     }
 

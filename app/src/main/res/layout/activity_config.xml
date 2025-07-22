@@ -48,6 +48,19 @@
 
 
     <TextView
+        android:id="@+id/tv_sitef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/category_config_sitef"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
         android:id="@+id/btn_sitef_test_conection"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -82,10 +95,44 @@
         android:textColor="#FFFFFF"
         android:textSize="22sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_sitef_test_conection" />
+
+    <TextView
+        android:id="@+id/btn_sitef_config_infos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_config_default"
+        android:gravity="center|center_horizontal"
+        android:padding="10dp"
+        android:text="@string/button_text_config_sitef_token_config_infos"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_sitef_config" />
+
+    <TextView
+        android:id="@+id/tv_printer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/category_config_printer"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_sitef_config_infos" />
 
     <TextView
         android:id="@+id/btn_test_printer"
@@ -108,6 +155,19 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_printer" />
 
     <TextView
+        android:id="@+id/tv_products"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/category_config_products"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_test_printer" />
+
+    <TextView
         android:id="@+id/btn_product_refresh"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -128,43 +188,39 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_products" />
 
     <TextView
-        android:id="@+id/tv_sitef"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/category_config_sitef"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <TextView
-        android:id="@+id/tv_printer"
+        android:id="@+id/tv_cashier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/category_config_printer"
+        android:text="@string/category_config_cashier"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_sitef_config" />
+        app:layout_constraintTop_toBottomOf="@id/btn_product_refresh" />
 
     <TextView
-        android:id="@+id/tv_products"
-        android:layout_width="wrap_content"
+        android:id="@+id/btn_cashier_test"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/category_config_products"
-        android:textColor="@color/black"
-        android:textSize="24sp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_config_default"
+        android:gravity="center|center_horizontal"
+        android:padding="10dp"
+        android:text="teste"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_test_printer" />
+        app:layout_constraintTop_toBottomOf="@id/tv_cashier" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

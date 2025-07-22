@@ -6,8 +6,8 @@ import org.junit.Test
 
 class ProductAdapterTest {
 
-    private fun createProduct(name: String, price: Double, quantity: Int = 1): product {
-        return product(name = name, photo = "", price = price, quantity = quantity)
+    private fun createProduct(name: String, price: Double, quantity: Int = 1, cnpj: String = ""): product {
+        return product(cnpj = cnpj, name = name, photo = "", price = price, quantity = quantity)
     }
 
     @Test

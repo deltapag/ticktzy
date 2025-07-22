@@ -1,7 +1,9 @@
 package br.com.sttsoft.ticktzy.repository.remote.response
 
+import android.text.Editable
+
 data class Sitef(
-    val ip: String,
-    val porta: String,
-    val ssl: String
+    var ip: String,
+    var porta: String,
+    var ssl: String
 )

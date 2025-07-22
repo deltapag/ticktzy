@@ -4,11 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import br.com.sttsoft.ticktzy.databinding.ActivityConfigBinding
 import br.com.sttsoft.ticktzy.domain.GetProductsUseCase
@@ -18,7 +15,7 @@ import br.com.sttsoft.ticktzy.domain.ProductSyncUseCase
 import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
-import br.com.sttsoft.ticktzy.presentation.base.PaymentTypeChooseDialog
+import br.com.sttsoft.ticktzy.presentation.cashier.ActivityCashierFinish
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import com.sunmi.peripheral.printer.InnerPrinterCallback
 import com.sunmi.peripheral.printer.InnerPrinterManager
@@ -40,8 +37,6 @@ class ConfigActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {override fun handleOnBackPressed() {} })
 
         initActivityResultLaucher()
 
@@ -131,6 +126,14 @@ class ConfigActivity: BaseActivity() {
                     hideLoading()
                 }
             }
+        }
+
+        binding.btnSitefConfigInfos.setOnClickListener {
+            startActivity(Intent(this@ConfigActivity, ConfigSitefInfosActivity::class.java))
+        }
+
+        binding.btnCashierTest.setOnClickListener {
+            startActivity(Intent(this@ConfigActivity, ActivityCashierFinish::class.java))
         }
     }
 

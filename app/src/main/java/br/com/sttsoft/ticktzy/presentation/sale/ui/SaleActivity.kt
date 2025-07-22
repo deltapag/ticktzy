@@ -1,20 +1,24 @@
 package br.com.sttsoft.ticktzy.presentation.sale.ui
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.GridLayoutManager
+import br.com.execucao.posmp_api.SmartPosHelper
+import br.com.execucao.posmp_api.printer.PrinterService
+import br.com.execucao.posmp_api.store.AppStatus
+import br.com.execucao.smartPOSService.printer.IOnPrintFinished
 import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivitySaleBinding
+import br.com.sttsoft.ticktzy.domain.PrinterUseCase
 import br.com.sttsoft.ticktzy.domain.ProductCacheUseCase
 import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
-import br.com.sttsoft.ticktzy.presentation.base.PaymentTypeChooseDialog
+import br.com.sttsoft.ticktzy.presentation.dialogs.PaymentTypeChooseDialog
+import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
 import br.com.sttsoft.ticktzy.presentation.sale.components.ProductAdapter
 import br.com.sttsoft.ticktzy.repository.local.product
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
@@ -38,13 +42,16 @@ class SaleActivity: BaseActivity() {
 
     private var infos: InfoResponse? = null
 
+    private lateinit var printerService: PrinterService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        infos = this.getFromPrefs("SITEF_INFOS")
+        initializeSmartPosHelper()
+        initializePrinterService()
 
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {override fun handleOnBackPressed() {} })
+        infos = this.getFromPrefs("SITEF_INFOS")
 
         initPrinter()
 
@@ -70,9 +77,33 @@ class SaleActivity: BaseActivity() {
 
     private fun initActivityResultLaucher() {
         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                // Trate o resultado aqui
+            val data = result.data
+            val bundle = data?.extras
+            if (bundle != null) {
+                if (result.resultCode == RESULT_OK) {
+                    val comprovanteEstab = bundle.getString("VIA_ESTABELECIMENTO")
+                    if (comprovanteEstab != null && comprovanteEstab.trim { it <= ' ' }.isNotEmpty()) {
+                        printReceipt(comprovanteEstab)
+                    }
+
+                    val dialog = ConfirmDialog ({ option ->
+                        when (option) {
+                            "yes" -> {
+                                val comprovanteCliente = bundle.getString("VIA_CLIENTE")
+                                if (comprovanteCliente != null && comprovanteCliente.trim { it <= ' ' }.isNotEmpty()) {
+                                    printReceipt(comprovanteCliente)
+                                }
+                                printTickets()
+                            }
+                            "no" -> {
+                                printTickets()
+                            }
+                        }
+                    }, getString(R.string.dialog_print_question_title), getString(R.string.dialog_print_question_body))
+                    dialog.show(supportFragmentManager, "PrintQuestionDialog")
+                }
+            } else {
+                Toast.makeText(this, "Nenhum dado retornado", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -110,13 +141,28 @@ class SaleActivity: BaseActivity() {
 
         binding.paymentBar.setOnCashClick {
             if (verifyTotal()) {
-
+                //printTickets()
+                val dialog = ConfirmDialog ({ option ->
+                    when (option) {
+                        "yes" -> {
+                            //val comprovanteCliente = bundle.getString("VIA_CLIENTE")
+                            //if (comprovanteCliente != null && comprovanteCliente.trim { it <= ' ' }.isNotEmpty()) {
+                                //printReceipt(comprovanteCliente)
+                            //}
+                            printTickets()
+                        }
+                        "no" -> {
+                            printTickets()
+                        }
+                    }
+                },getString(R.string.dialog_print_question_title), getString(R.string.dialog_print_question_body))
+                dialog.show(supportFragmentManager, "PrintQuestionDialog")
             }
         }
 
         binding.paymentBar.setOnPixClick {
             if (verifyTotal()) {
-                generatePaymentIntent("", true)
+                generatePaymentIntent("122", true)
             }
         }
 
@@ -124,8 +170,8 @@ class SaleActivity: BaseActivity() {
             if (verifyTotal()) {
                 val dialog = PaymentTypeChooseDialog ({ tipo ->
                     when (tipo) {
-                        "debit" -> { generatePaymentIntent("") }
-                        "credit" -> { generatePaymentIntent("") }
+                        "debit" -> { generatePaymentIntent("2") }
+                        "credit" -> { generatePaymentIntent("3") }
                     }
                 }, false)
                 dialog.show(supportFragmentManager, "CardTypeDialog")
@@ -144,5 +190,64 @@ class SaleActivity: BaseActivity() {
         } else {
             return true
         }
+    }
+
+    private fun initializeSmartPosHelper() {
+        if (SmartPosHelper.getInstance() == null) {
+            SmartPosHelper.init(applicationContext, AppStatus.ACTIVE)
+        }
+    }
+
+    private fun initializePrinterService() {
+        printerService = SmartPosHelper.getInstance().printer
+        printerService.open()
+    }
+
+    private fun isPrinterServiceAvailable(): Boolean {
+        return printerService != null
+    }
+
+    private fun printReceipt(viaEstab: String) {
+        if (isPrinterServiceAvailable()) {
+            val formattedViaEstab = viaEstab.replace(": ", ":")
+                .replace(" T", "T")
+                .replace(" R", "R")
+                .replace(" F", "F")
+
+
+            printerService.printText(formattedViaEstab,
+                object : IOnPrintFinished.Stub() {
+                    override fun onSuccess() {
+                        Toast.makeText(
+                            this@SaleActivity,
+                            "Impresso com sucesso",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+                    override fun onFailed(error: Int, msg: String) {
+                        Toast.makeText(
+                            this@SaleActivity,
+                            "Erro na Impressora: $msg",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
+        } else {
+            Toast.makeText(this, "Impressora indisponível", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun printTickets() {
+        val produtosSelecionados = adapter.getSelectedProducts()
+        produtosSelecionados.forEach { product ->
+            infos?.let { info ->
+                repeat(product.quantity) {
+                    PrinterUseCase(sunmiPrinterService).ticketPrint(info, product.name, product.price)
+                }
+            }
+        }
+
+        finish()
     }
 }

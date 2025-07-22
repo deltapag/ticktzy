@@ -10,7 +10,9 @@ import br.com.sttsoft.ticktzy.domain.GetProductsUseCase
 import br.com.sttsoft.ticktzy.domain.ProductCacheUseCase
 import br.com.sttsoft.ticktzy.domain.ProductSyncUseCase
 import br.com.sttsoft.ticktzy.domain.TerminalnfosUseCase
+import br.com.sttsoft.ticktzy.extensions.getPref
 import br.com.sttsoft.ticktzy.extensions.saveToPrefs
+import br.com.sttsoft.ticktzy.presentation.cashier.ActivityCashierStart
 import br.com.sttsoft.ticktzy.presentation.home.HomeActivity
 import br.com.sttsoft.ticktzy.repository.remote.request.TerminalWrapper
 import kotlinx.coroutines.Dispatchers
@@ -61,8 +63,16 @@ class SplashActivity: BaseActivity() {
                     }
 
                     binding.tvStatus.text = "Sucesso! Iniciando..."
-                    startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
-                    finish()
+
+                    if (this@SplashActivity.getPref("CAIXA_ABERTO", false)) {
+                        startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
+                        finish()
+                    } else {
+                        startActivity(Intent(this@SplashActivity, ActivityCashierStart::class.java))
+                        finish()
+                    }
+
+
 
                 } catch (e: Exception) {
                     binding.tvStatus.text = "Erro ao obter dados: ${e.message}"

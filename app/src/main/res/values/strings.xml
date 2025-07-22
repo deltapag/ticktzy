@@ -1,17 +1,8 @@
 <resources>
     <string name="app_name">Ticketzy</string>
 
-    <string name="button_text_home_new_sale">Nova Venda</string>
-    <string name="button_text_home_charge">Cobrar</string>
-    <string name="button_text_home_reports">Relatórios</string>
-    <string name="button_text_home_config">Configurações</string>
 
-    <string name="button_text_config_sitef_conection_test">Teste de conexão SITEF</string>
-    <string name="button_text_config_sitef_token_config">Config. Token SITEF</string>
-    <string name="button_text_config_test_printer">Teste de impressora</string>
-    <string name="button_text_config_product_refresh">Buscar produtos</string>
-
-
+    <!-- Texts basics -->
     <string name="text_home_version">v %s</string>
 
     <string name="text_sale_price">R$ %.2f</string>
@@ -19,6 +10,30 @@
     <string name="error_value_zero">Valor não pode ser igual a R$0,00</string>
 
     <string name="cancel">CANCELAR</string>
+    <string name="save">SALVAR</string>
+    <string name="yes">SIM</string>
+    <string name="no">Não</string>
+    <string name="pay">PAGAR</string>
+    <string name="confirmation">confirmação</string>
+
+
+    <!-- Buttons -->
+    <string name="button_text_home_new_sale">Nova Venda</string>
+    <string name="button_text_home_charge">Cobrar</string>
+    <string name="button_text_home_administratives_functions">Funções Administrativas</string>
+    <string name="button_text_home_cashier_functions">Funções de Caixa</string>
+    <string name="button_text_home_reports">Relatórios</string>
+    <string name="button_text_home_config">Configurações</string>
+
+    <string name="button_text_config_sitef_conection_test">Teste de conexão SITEF</string>
+    <string name="button_text_config_sitef_token_config">Config. Token SITEF</string>
+    <string name="button_text_config_sitef_token_config_infos">Config. SITEF Infos</string>
+    <string name="button_text_config_test_printer">Teste de impressora</string>
+    <string name="button_text_config_product_refresh">Buscar produtos</string>
+
+
+    <string name="text_config_sitef_info_ip">IP</string>
+    <string name="text_config_sitef_info_port">PORTA</string>
 
     <string name="dialog_payment_type_title">SELECIONE A FORMA DO PAGAMENTO</string>
 
@@ -29,5 +44,26 @@
     <string name="category_config_sitef"> - SITEF - </string>
     <string name="category_config_printer"> - Impressora - </string>
     <string name="category_config_products"> - Produtos - </string>
+    <string name="category_config_cashier"> - Caixa - </string>
+
+    <string name="dialog_print_question_title">impressão de via</string>
+    <string name="dialog_print_question_body">DESEJA IMPRIMIR A VIA DO CLIENTE?</string>
+
+    <string name="dialog_cashier_open_title">confirmação</string>
+    <string name="dialog_cashier_open_body">Confirma valor de abertura de caixa?</string>
+
+    <string name="text_cashier_title">Abertura de caixa</string>
+    <string name="text_cashier_start">Confirma abertura</string>
+
+    <string name="text_cashier_title_finish">Fechamento de caixa</string>
+    <string name="text_cashier_finish">Confirma Fechamento</string>
+
+    <string name="button_text_cashier_finish">Fechamento de Caixa</string>
+    <string name="button_text_cashier_sangria">Sangria</string>
+
+    <string name="text_cashier_finish_confirmation">Deseja realizar o fechamento de caixa?</string>
 
 </resources>
+
+
+

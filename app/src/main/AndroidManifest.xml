@@ -36,6 +36,18 @@
         <activity android:name=".presentation.charge.ChargeActivity"
             android:exported="true"/>
 
+        <activity android:name=".presentation.config.ConfigSitefInfosActivity"
+            android:exported="true"/>
+
+        <activity android:name=".presentation.cashier.ActivityCashierStart"
+            android:exported="true"/>
+
+        <activity android:name=".presentation.cashier.ActivityCashierFinish"
+            android:exported="true"/>
+
+        <activity android:name=".presentation.cashier.home.ActivityCashierHome"
+            android:exported="true"/>
+
     </application>
 
 </manifest>

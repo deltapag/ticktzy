@@ -1,4 +1,4 @@
-package br.com.sttsoft.ticktzy.presentation.base
+package br.com.sttsoft.ticktzy.presentation.dialogs
 
 import android.app.Dialog
 import android.graphics.Color
