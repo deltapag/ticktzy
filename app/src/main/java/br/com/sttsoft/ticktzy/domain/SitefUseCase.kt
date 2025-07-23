@@ -105,7 +105,10 @@ class SitefUseCase {
         i.putExtra("empresaSitef", "00000000")
         infos?.apply {
 
-            i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
+
+            val serverInfos = infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta
+
+            i.putExtra("enderecoSitef", serverInfos)
 
             i.putExtra("cnpj_automacao", infos.Pagamento.lojasSitef[0].cnpj)
             i.putExtra("CNPJ_CPF", infos.Pagamento.Subadquirencia[0].cnpj)

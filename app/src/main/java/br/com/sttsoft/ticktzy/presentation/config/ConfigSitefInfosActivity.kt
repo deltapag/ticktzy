@@ -31,6 +31,9 @@ class ConfigSitefInfosActivity: BaseActivity() {
         infos?.let {
             binding.edtIp.setText(it.Pagamento.sitefPublico.ip)
             binding.edtPorta.setText(it.Pagamento.sitefPublico.porta)
+            binding.edtCnpjAutomacao.setText(it.Pagamento.lojasSitef.first().cnpj)
+            binding.edtCNPJCPF.setText(it.Pagamento.Subadquirencia.first().cnpj)
+            binding.edtDadosSubAdqui.setText(it.Pagamento.Subadquirencia.first().nomeFantasia)
         }
     }
 
@@ -44,6 +47,9 @@ class ConfigSitefInfosActivity: BaseActivity() {
             infos?.let {
                 it.Pagamento.sitefPublico.ip = binding.edtIp.text.toString()
                 it.Pagamento.sitefPublico.porta = binding.edtPorta.text.toString()
+                it.Pagamento.lojasSitef.first().cnpj = binding.edtCnpjAutomacao.text.toString()
+                it.Pagamento.Subadquirencia.first().cnpj = binding.edtCNPJCPF.text.toString()
+                it.Pagamento.Subadquirencia.first().nomeFantasia = binding.edtDadosSubAdqui.text.toString()
             }
 
             infos?.saveToPrefs(this@ConfigSitefInfosActivity, "SITEF_INFOS")

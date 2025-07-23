@@ -13,8 +13,6 @@ import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivitySitefHomeBinding
 import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
-import br.com.sttsoft.ticktzy.extensions.getPref
-import br.com.sttsoft.ticktzy.extensions.savePref
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
@@ -46,6 +44,9 @@ class ActivitySitefHome: BaseActivity() {
     }
 
     fun initFuncions() {
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
         binding.btnReprint.setOnClickListener {
             activityResultLauncher.launch(infos?.let { SitefUseCase().reprint(it) })
         }
