@@ -15,7 +15,6 @@ import br.com.sttsoft.ticktzy.domain.ProductSyncUseCase
 import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
-import br.com.sttsoft.ticktzy.presentation.cashier.ActivityCashierFinish
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import com.sunmi.peripheral.printer.InnerPrinterCallback
 import com.sunmi.peripheral.printer.InnerPrinterManager
@@ -133,7 +132,7 @@ class ConfigActivity: BaseActivity() {
         }
 
         binding.btnCashierTest.setOnClickListener {
-            startActivity(Intent(this@ConfigActivity, ActivityCashierFinish::class.java))
+
         }
     }
 

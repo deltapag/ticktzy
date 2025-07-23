@@ -12,7 +12,7 @@ import br.com.sttsoft.ticktzy.domain.ProductSyncUseCase
 import br.com.sttsoft.ticktzy.domain.TerminalnfosUseCase
 import br.com.sttsoft.ticktzy.extensions.getPref
 import br.com.sttsoft.ticktzy.extensions.saveToPrefs
-import br.com.sttsoft.ticktzy.presentation.cashier.ActivityCashierStart
+import br.com.sttsoft.ticktzy.presentation.cashier.start.ActivityCashierStart
 import br.com.sttsoft.ticktzy.presentation.home.HomeActivity
 import br.com.sttsoft.ticktzy.repository.remote.request.TerminalWrapper
 import kotlinx.coroutines.Dispatchers

@@ -1,15 +1,14 @@
-package br.com.sttsoft.ticktzy.presentation.cashier
+package br.com.sttsoft.ticktzy.presentation.cashier.start
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivityCashierBinding
-import br.com.sttsoft.ticktzy.extensions.savePref
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
-import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
-import br.com.sttsoft.ticktzy.presentation.home.HomeActivity
+import com.sunmi.peripheral.printer.InnerPrinterCallback
+import com.sunmi.peripheral.printer.InnerPrinterManager
+import com.sunmi.peripheral.printer.SunmiPrinterService
 import java.text.DecimalFormat
 
 abstract class ActivityCashierBase: BaseActivity() {
@@ -20,12 +19,28 @@ abstract class ActivityCashierBase: BaseActivity() {
 
     var currentValue: Long = 0L
 
+    var sunmiPrinterService: SunmiPrinterService? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        initPrinter()
+
         setNumberClicks()
         setButtonsClicks()
+    }
+
+    private fun initPrinter() {
+        InnerPrinterManager.getInstance().bindService(this, object : InnerPrinterCallback() {
+            override fun onConnected(service: SunmiPrinterService) {
+                sunmiPrinterService = service
+            }
+
+            override fun onDisconnected() {
+                sunmiPrinterService = null
+            }
+        })
     }
 
     fun setNumberClicks() {

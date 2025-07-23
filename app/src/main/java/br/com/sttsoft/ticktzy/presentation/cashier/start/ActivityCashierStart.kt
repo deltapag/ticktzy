@@ -1,38 +1,36 @@
-package br.com.sttsoft.ticktzy.presentation.cashier
+package br.com.sttsoft.ticktzy.presentation.cashier.start
 
 import android.content.Intent
 import android.os.Bundle
 import br.com.sttsoft.ticktzy.R
-import br.com.sttsoft.ticktzy.databinding.ActivityCashierBinding
+import br.com.sttsoft.ticktzy.domain.PrinterUseCase
 import br.com.sttsoft.ticktzy.extensions.savePref
-import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
+import br.com.sttsoft.ticktzy.extensions.toRealFormatado
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
 import br.com.sttsoft.ticktzy.presentation.home.HomeActivity
 
-class ActivityCashierFinish: ActivityCashierBase() {
+class ActivityCashierStart: ActivityCashierBase() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        initTexts()
-        finishCashier()
+        startCashier()
     }
 
-    private fun initTexts() {
-        binding.tvTitle.text = getString(R.string.text_cashier_title_finish)
-        binding.tvStart.text = getString(R.string.text_cashier_finish)
-    }
-
-    private fun finishCashier() {
+    private fun startCashier() {
         binding.tvStart.setOnClickListener {
             if (verifyBeforeStart()) {
-
                 val dialog = ConfirmDialog ({ option ->
                     when (option) {
                         "yes" -> {
-                            this.savePref("CAIXA_ABERTO", false)
-                            val intent = Intent(this, ActivityCashierStart::class.java)
+                            this.savePref("CAIXA_INICIAL", currentValue)
+                            this.savePref("CAIXA", currentValue)
+                            this.savePref("CAIXA_ABERTO", true)
+
+                            PrinterUseCase(sunmiPrinterService).printInfo("ABERTURA", currentValue.toRealFormatado())
+
+                            val intent = Intent(this, HomeActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                         }
@@ -43,5 +41,4 @@ class ActivityCashierFinish: ActivityCashierBase() {
             }
         }
     }
-
 }

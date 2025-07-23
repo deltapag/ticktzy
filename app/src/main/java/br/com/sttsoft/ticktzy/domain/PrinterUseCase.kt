@@ -3,6 +3,10 @@ package br.com.sttsoft.ticktzy.domain
 import br.com.sttsoft.ticktzy.extensions.toReal
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import com.sunmi.peripheral.printer.SunmiPrinterService
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
 class PrinterUseCase(val printerService: SunmiPrinterService?) {
@@ -83,5 +87,67 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
         }
     }
 
+    fun printInfo(info:String, value: String) {
+        printerService?.apply {
+            val boldOn = byteArrayOf(0x1B, 0x45, 0x01)
+            val boldOff = byteArrayOf(0x1B, 0x45, 0x00)
+
+            // Inicial
+            setAlignment(1, null) // Centralizado
+            sendRAWData(boldOn, null)
+            setFontSize(22f, null)
+            printText("COMPROVANTE DE " + info + " \n", null)
+
+            lineWrap(1, null)
+
+            // Item comprado
+            setFontSize(26f, null)
+            printText("Valor: " + value + " \n", null)
+            setFontSize(22f, null)
+            printText(getDataHoraFormatada(), null)
+            sendRAWData(boldOff, null)
+
+            lineWrap(2, null)
+
+            setFontSize(22f, null)
+            printText("Sem validade fiscal.\n Apenas para registro!\n", null)
+
+            lineWrap(4, null)
+        }
+    }
+
+    fun getDataHoraFormatada(): String {
+        val formato = SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale("pt", "BR"))
+        return formato.format(Date())
+    }
+
+    fun printFinish() {
+        printerService?.apply {
+            val boldOn = byteArrayOf(0x1B, 0x45, 0x01)
+            val boldOff = byteArrayOf(0x1B, 0x45, 0x00)
+
+            // Inicial
+            setAlignment(1, null) // Centralizado
+            sendRAWData(boldOn, null)
+            setFontSize(22f, null)
+            printText("COMPROVANTE DE FECHAMENTO\n", null)
+
+            lineWrap(1, null)
+
+            // Item comprado
+            setFontSize(26f, null)
+            printText("CAIXA FECHADO\n", null)
+            setFontSize(22f, null)
+            printText(getDataHoraFormatada(), null)
+            sendRAWData(boldOff, null)
+
+            lineWrap(2, null)
+
+            setFontSize(22f, null)
+            printText("Sem validade fiscal.\n Apenas para registro!\n", null)
+
+            lineWrap(4, null)
+        }
+    }
 
 }

@@ -15,6 +15,7 @@
     <string name="no">Não</string>
     <string name="pay">PAGAR</string>
     <string name="confirmation">confirmação</string>
+    <string name="confirm">confirmar</string>
 
 
     <!-- Buttons -->
@@ -56,14 +57,39 @@
     <string name="text_cashier_start">Confirma abertura</string>
 
     <string name="text_cashier_title_finish">Fechamento de caixa</string>
-    <string name="text_cashier_finish">Confirma Fechamento</string>
+    <string name="text_cashier_finish">Confirmar Fechamento?</string>
 
     <string name="button_text_cashier_finish">Fechamento de Caixa</string>
     <string name="button_text_cashier_sangria">Sangria</string>
+    <string name="button_text_cashier_reinforce">Reforço de Caixa</string>
 
     <string name="text_cashier_finish_confirmation">Deseja realizar o fechamento de caixa?</string>
+    <string name="text_cashier_sangria_confirmation">Deseja realizar a sangria de caixa?</string>
+    <string name="text_cashier_reinforce_confirmation">Deseja realizar o reforço de caixa?</string>
+
+    <string name="text_cashier_table_finish">Informações de Fechamento</string>
+    <string name="text_cashier_table_payment_types">Formas de Pagamento</string>
+    <string name="text_cashier_table_final_values">Valores Finais</string>
+
+    <string name="text_cashier_table_sales_made">Vendas Realizadas</string>
+    <string name="text_cashier_table_charge_made">Cobranças Realizadas</string>
+    <string name="text_cashier_table_sangria_made">Sangrias Realizadas</string>
+    <string name="text_cashier_table_reinforce_made">Reforços Realizados</string>
+
+    <string name="text_cashier_table_type_debit">Cartão de Débito</string>
+    <string name="text_cashier_table_type_credit">Cartão de Crédito</string>
+    <string name="text_cashier_table_type_pix">Pix</string>
+    <string name="text_cashier_table_type_money">Dinheiro</string>
+
+    <string name="text_cashier_table_start_money">Dinheiro Inicial</string>
+    <string name="text_cashier_table_sangria_money">Total de Sangrias </string>
+    <string name="text_cashier_table_reinforce_money">Total de Reforços </string>
+    <string name="text_cashier_table_finish_money">Dinheiro em Caixa</string>
+
 
 </resources>
+
+
 
 
 

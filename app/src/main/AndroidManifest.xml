@@ -39,13 +39,19 @@
         <activity android:name=".presentation.config.ConfigSitefInfosActivity"
             android:exported="true"/>
 
-        <activity android:name=".presentation.cashier.ActivityCashierStart"
+        <activity android:name=".presentation.cashier.start.ActivityCashierStart"
             android:exported="true"/>
 
-        <activity android:name=".presentation.cashier.ActivityCashierFinish"
+        <activity android:name=".presentation.cashier.finish.ActivityCashierFinish"
             android:exported="true"/>
 
         <activity android:name=".presentation.cashier.home.ActivityCashierHome"
+            android:exported="true"/>
+
+        <activity android:name=".presentation.cashier.sangria.CashierSangriaActivity"
+            android:exported="true"/>
+
+        <activity android:name=".presentation.cashier.reinforce.CashierReinforceActivity"
             android:exported="true"/>
 
     </application>

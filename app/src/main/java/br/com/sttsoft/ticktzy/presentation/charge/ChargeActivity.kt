@@ -15,6 +15,8 @@ import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivityChargeBinding
 import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
+import br.com.sttsoft.ticktzy.extensions.getPref
+import br.com.sttsoft.ticktzy.extensions.savePref
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.presentation.dialogs.PaymentTypeChooseDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
@@ -57,6 +59,7 @@ class ChargeActivity: BaseActivity() {
             val bundle = data?.extras
             if (bundle != null) {
                 if (result.resultCode == RESULT_OK) {
+                    this.savePref("CHARGE_MADE", this.getPref("CHARGE_MADE", 0) + 1)
                     val comprovanteEstab = bundle.getString("VIA_ESTABELECIMENTO")
                     if (comprovanteEstab != null && comprovanteEstab.trim { it <= ' ' }.isNotEmpty()) {
                         printReceipt(comprovanteEstab)
@@ -127,7 +130,11 @@ class ChargeActivity: BaseActivity() {
                     when (tipo) {
                         "debit" -> { generatePaymentIntent("2", true) }
                         "credit" -> { generatePaymentIntent("3", true) }
-                        "money" -> { finish() }
+                        "money" -> {
+                            this.savePref("CHARGE_MADE", this.getPref("CHARGE_MADE", 0) + 1)
+                            this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
+                            //TODO deve ir agora para a tela de troco
+                        }
                     }
                 }, true)
                 dialog.show(supportFragmentManager, "CardTypeDialog")
