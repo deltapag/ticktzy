@@ -18,6 +18,7 @@ import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.extensions.getPref
 import br.com.sttsoft.ticktzy.extensions.savePref
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
+import br.com.sttsoft.ticktzy.presentation.dialogs.ChangeDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.PaymentTypeChooseDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
@@ -131,9 +132,19 @@ class ChargeActivity: BaseActivity() {
                         "debit" -> { generatePaymentIntent("2", true) }
                         "credit" -> { generatePaymentIntent("3", true) }
                         "money" -> {
-                            this.savePref("CHARGE_MADE", this.getPref("CHARGE_MADE", 0) + 1)
-                            this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
-                            //TODO deve ir agora para a tela de troco
+                            ChangeDialog(this, (currentValue.toDouble() / 100)) { valorRecebido, troco ->
+
+                                this.savePref("CHARGE_MADE", this.getPref("CHARGE_MADE", 0) + 1)
+                                this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
+
+                                var caixa = this.getPref("CAIXA", 0L)
+
+                                caixa += ((valorRecebido - troco) * 100).toLong()
+
+                                this.savePref("CAIXA", caixa)
+
+                                finish()
+                            }.show()
                         }
                     }
                 }, true)

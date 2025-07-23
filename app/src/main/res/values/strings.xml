@@ -17,6 +17,21 @@
     <string name="confirmation">confirmação</string>
     <string name="confirm">confirmar</string>
 
+    <!-- Dialogs -->
+    <string name="dialog_payment_type_title">SELECIONE A FORMA DO PAGAMENTO</string>
+
+    <string name="text_dialog_payment_type_choose_debit_card">CARTÃO DE DÉBITO</string>
+    <string name="text_dialog_payment_type_choose_credit_card">CARTÃO DE CRÉDITO</string>
+    <string name="text_dialog_payment_type_choose_money">DINHEIRO</string>
+
+    <string name="dialog_print_question_title">impressão de via</string>
+    <string name="dialog_print_question_body">DESEJA IMPRIMIR A VIA DO CLIENTE?</string>
+
+    <string name="dialog_cashier_open_title">confirmação</string>
+    <string name="dialog_cashier_open_body">Confirma valor de abertura de caixa?</string>
+
+    <string name="dialog_change_button">CONFIRMA</string>
+
 
     <!-- Buttons -->
     <string name="button_text_home_new_sale">Nova Venda</string>
@@ -32,26 +47,15 @@
     <string name="button_text_config_test_printer">Teste de impressora</string>
     <string name="button_text_config_product_refresh">Buscar produtos</string>
 
+    <!-- Texts -->
 
     <string name="text_config_sitef_info_ip">IP</string>
     <string name="text_config_sitef_info_port">PORTA</string>
-
-    <string name="dialog_payment_type_title">SELECIONE A FORMA DO PAGAMENTO</string>
-
-    <string name="text_dialog_payment_type_choose_debit_card">CARTÃO DE DÉBITO</string>
-    <string name="text_dialog_payment_type_choose_credit_card">CARTÃO DE CRÉDITO</string>
-    <string name="text_dialog_payment_type_choose_money">DINHEIRO</string>
 
     <string name="category_config_sitef"> - SITEF - </string>
     <string name="category_config_printer"> - Impressora - </string>
     <string name="category_config_products"> - Produtos - </string>
     <string name="category_config_cashier"> - Caixa - </string>
-
-    <string name="dialog_print_question_title">impressão de via</string>
-    <string name="dialog_print_question_body">DESEJA IMPRIMIR A VIA DO CLIENTE?</string>
-
-    <string name="dialog_cashier_open_title">confirmação</string>
-    <string name="dialog_cashier_open_body">Confirma valor de abertura de caixa?</string>
 
     <string name="text_cashier_title">Abertura de caixa</string>
     <string name="text_cashier_start">Confirma abertura</string>
@@ -86,7 +90,9 @@
     <string name="text_cashier_table_reinforce_money">Total de Reforços </string>
     <string name="text_cashier_table_finish_money">Dinheiro em Caixa</string>
 
-
+    <string name="button_text_sitef_reprint">Reimpressãoo</string>
+    <string name="button_text_sitef_cancel">Estorno</string>
+    <string name="button_text_sitef_send_logs">Envio de Logs SITEF</string>
 </resources>
 
 

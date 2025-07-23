@@ -19,6 +19,7 @@ import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.extensions.getPref
 import br.com.sttsoft.ticktzy.extensions.savePref
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
+import br.com.sttsoft.ticktzy.presentation.dialogs.ChangeDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.PaymentTypeChooseDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
 import br.com.sttsoft.ticktzy.presentation.sale.components.ProductAdapter
@@ -45,6 +46,8 @@ class SaleActivity: BaseActivity() {
     private var infos: InfoResponse? = null
 
     private lateinit var printerService: PrinterService
+
+    private lateinit var type: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,29 +147,27 @@ class SaleActivity: BaseActivity() {
 
         binding.paymentBar.setOnCashClick {
             if (verifyTotal()) {
-                //printTickets()
-                val dialog = ConfirmDialog ({ option ->
-                    when (option) {
-                        "yes" -> {
-                            //val comprovanteCliente = bundle.getString("VIA_CLIENTE")
-                            //if (comprovanteCliente != null && comprovanteCliente.trim { it <= ' ' }.isNotEmpty()) {
-                                //printReceipt(comprovanteCliente)
-                            //}
-                            printTickets()
-                        }
-                        "no" -> {
-                            this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
-                            this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
-                            printTickets()
-                        }
-                    }
-                },getString(R.string.dialog_print_question_title), getString(R.string.dialog_print_question_body))
-                dialog.show(supportFragmentManager, "PrintQuestionDialog")
+                ChangeDialog(this, adapter.getTotal()) { valorRecebido, troco ->
+
+                    this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
+                    this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
+
+                    var caixa = this.getPref("CAIXA", 0L)
+
+                    caixa += ((valorRecebido - troco) * 100).toLong()
+
+                    this.savePref("CAIXA", caixa)
+
+                    type = "money"
+
+                    printTickets()
+                }.show()
             }
         }
 
         binding.paymentBar.setOnPixClick {
             if (verifyTotal()) {
+                type = "pix"
                 generatePaymentIntent("122", true)
             }
         }
@@ -175,8 +176,14 @@ class SaleActivity: BaseActivity() {
             if (verifyTotal()) {
                 val dialog = PaymentTypeChooseDialog ({ tipo ->
                     when (tipo) {
-                        "debit" -> { generatePaymentIntent("2") }
-                        "credit" -> { generatePaymentIntent("3") }
+                        "debit" -> {
+                            type = "debit"
+                            generatePaymentIntent("2")
+                        }
+                        "credit" -> {
+                            type = "credit"
+                            generatePaymentIntent("3")
+                        }
                     }
                 }, false)
                 dialog.show(supportFragmentManager, "CardTypeDialog")
@@ -244,6 +251,9 @@ class SaleActivity: BaseActivity() {
     }
 
     private fun printTickets() {
+
+        handlePaymentType()
+
         val produtosSelecionados = adapter.getSelectedProducts()
         produtosSelecionados.forEach { product ->
             infos?.let { info ->
@@ -254,5 +264,19 @@ class SaleActivity: BaseActivity() {
         }
 
         finish()
+    }
+
+    private fun handlePaymentType() {
+        when (type) {
+            "pix" -> {
+                this.savePref("PIX_TYPE", this.getPref("PIX_TYPE", 0) + 1)
+            }
+            "debit" -> {
+                this.savePref("DEBIT_TYPE", this.getPref("DEBIT_TYPE", 0) + 1)
+            }
+            "credit" -> {
+                this.savePref("CREDIT_TYPE", this.getPref("CREDIT_TYPE", 0) + 1)
+            }
+        }
     }
 }

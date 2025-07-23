@@ -1,7 +1,6 @@
 package br.com.sttsoft.ticktzy.domain
 
 import android.content.Intent
-import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.extensions.toSitefFormat
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import java.text.SimpleDateFormat
@@ -85,6 +84,100 @@ class SitefUseCase {
         i.putExtra("numeroCupom", numeroCupom)
         i.putExtra("modalidade", modalidade)
         i.putExtra("valor", valor.toSitefFormat())
+        i.putExtra("timeoutColeta", "30")
+        i.putExtra("comExterna", "0")
+
+        return i
+    }
+
+    fun trace(infos: InfoResponse) : Intent {
+        val calendar = Calendar.getInstance()
+
+        val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+        val timeFormatter = SimpleDateFormat("HHmmss", Locale.getDefault())
+        val cupomFormatter = SimpleDateFormat("ddMMyyyyHHmmss", Locale.getDefault())
+
+        val date = dateFormatter.format(calendar.time)
+        val time = timeFormatter.format(calendar.time)
+        val numeroCupom = cupomFormatter.format(calendar.time)
+
+        var i = Intent("br.com.softwareexpress.sitef.msitef.ACTIVITY_CLISITEF")
+        i.putExtra("empresaSitef", "00000000")
+        infos?.apply {
+
+            i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
+
+            i.putExtra("cnpj_automacao", infos.Pagamento.lojasSitef[0].cnpj)
+            i.putExtra("CNPJ_CPF", infos.Pagamento.Subadquirencia[0].cnpj)
+        }
+        i.putExtra("operador", "mSiTef")
+        i.putExtra("data", date)
+        i.putExtra("hora", time)
+        i.putExtra("numeroCupom", numeroCupom)
+        i.putExtra("modalidade", "121")
+        i.putExtra("timeoutColeta", "30")
+        i.putExtra("comExterna", "0")
+
+        return i
+    }
+
+    fun cancelation(infos: InfoResponse) : Intent {
+        val calendar = Calendar.getInstance()
+
+        val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+        val timeFormatter = SimpleDateFormat("HHmmss", Locale.getDefault())
+        val cupomFormatter = SimpleDateFormat("ddMMyyyyHHmmss", Locale.getDefault())
+
+        val date = dateFormatter.format(calendar.time)
+        val time = timeFormatter.format(calendar.time)
+        val numeroCupom = cupomFormatter.format(calendar.time)
+
+        var i = Intent("br.com.softwareexpress.sitef.msitef.ACTIVITY_CLISITEF")
+        i.putExtra("empresaSitef", "00000000")
+        infos?.apply {
+
+            i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
+
+            i.putExtra("cnpj_automacao", infos.Pagamento.lojasSitef[0].cnpj)
+            i.putExtra("CNPJ_CPF", infos.Pagamento.Subadquirencia[0].cnpj)
+        }
+        i.putExtra("operador", "mSiTef")
+        i.putExtra("data", date)
+        i.putExtra("hora", time)
+        i.putExtra("numeroCupom", numeroCupom)
+        i.putExtra("restricoes", "TransacoesAdicionaisHabilitadas=8;3919")
+        i.putExtra("modalidade", "200")
+        i.putExtra("timeoutColeta", "30")
+        i.putExtra("comExterna", "0")
+
+        return i
+    }
+
+    fun reprint(infos: InfoResponse) : Intent {
+        val calendar = Calendar.getInstance()
+
+        val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+        val timeFormatter = SimpleDateFormat("HHmmss", Locale.getDefault())
+        val cupomFormatter = SimpleDateFormat("ddMMyyyyHHmmss", Locale.getDefault())
+
+        val date = dateFormatter.format(calendar.time)
+        val time = timeFormatter.format(calendar.time)
+        val numeroCupom = cupomFormatter.format(calendar.time)
+
+        var i = Intent("br.com.softwareexpress.sitef.msitef.ACTIVITY_CLISITEF")
+        i.putExtra("empresaSitef", "00000000")
+        infos?.apply {
+
+            i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
+
+            i.putExtra("cnpj_automacao", infos.Pagamento.lojasSitef[0].cnpj)
+            i.putExtra("CNPJ_CPF", infos.Pagamento.Subadquirencia[0].cnpj)
+        }
+        i.putExtra("operador", "mSiTef")
+        i.putExtra("data", date)
+        i.putExtra("hora", time)
+        i.putExtra("numeroCupom", numeroCupom)
+        i.putExtra("modalidade", "112")
         i.putExtra("timeoutColeta", "30")
         i.putExtra("comExterna", "0")
 

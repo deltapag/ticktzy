@@ -11,70 +11,97 @@ import br.com.sttsoft.ticktzy.repository.local.product
 
 class ProductAdapter(
     productList: List<product>,
-    private val onTotalChanged: (Double) -> Unit) : RecyclerView.Adapter<ProductViewHolder>()  {
+    private val onTotalChanged: (Double) -> Unit
+) : RecyclerView.Adapter<ProductViewHolder>() {
 
     private val originalList = productList.toList()
     private val filteredList = mutableListOf<product>().apply { addAll(productList) }
 
     private var selectedPosition: Int = RecyclerView.NO_POSITION
+    private var lastClickTime = 0L
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.component_product_item, parent, false)
         return ProductViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return filteredList.size
-    }
+    override fun getItemCount(): Int = filteredList.size
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
+        bindItem(holder, filteredList[position], position)
+    }
+
+    override fun onBindViewHolder(holder: ProductViewHolder, position: Int, payloads: MutableList<Any>) {
         val item = filteredList[position]
-        holder.tvTitle.text = item.price.toReal()
+        val isSelected = position == selectedPosition
+
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position)
+        } else {
+            // Atualiza badge
+            holder.tvBadge.text = item.quantity.toString()
+            holder.tvBadge.visibility = if (item.quantity > 0) View.VISIBLE else View.GONE
+
+            // Atualiza visibilidade dos botões
+            holder.btnPlus.visibility = if (isSelected) View.VISIBLE else View.GONE
+            holder.btnMinus.visibility = if (isSelected) View.VISIBLE else View.GONE
+
+            // Atualiza visual de seleção
+            if (item.photo.isNotEmpty()) {
+                holder.ivProduct.alpha = if (isSelected) 0.5f else 1f
+            } else {
+                holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
+                holder.tvName.visibility = if (isSelected) View.GONE else View.VISIBLE
+            }
+        }
+    }
+
+    private fun bindItem(holder: ProductViewHolder, item: product, position: Int) {
+        val isSelected = position == selectedPosition
 
         holder.tvBadge.text = item.quantity.toString()
         holder.tvBadge.visibility = if (item.quantity > 0) View.VISIBLE else View.GONE
 
-        val isSelected = holder.adapterPosition == selectedPosition
         holder.btnPlus.visibility = if (isSelected) View.VISIBLE else View.GONE
         holder.btnMinus.visibility = if (isSelected) View.VISIBLE else View.GONE
 
         if (item.photo.isEmpty()) {
             holder.tvName.text = item.name
-            holder.tvName.visibility = View.VISIBLE
-            holder.ivProduct.visibility = View.GONE
-
-            holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
             holder.tvName.visibility = if (isSelected) View.GONE else View.VISIBLE
-
+            holder.ivProduct.visibility = View.GONE
+            holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
         } else {
             holder.ivProduct.setImageFromBase64(item.photo)
-            holder.tvName.visibility = View.GONE
             holder.ivProduct.visibility = View.VISIBLE
             holder.ivProduct.alpha = if (isSelected) 0.5f else 1f
+            holder.tvName.visibility = View.GONE
+            holder.tvTitle.text = item.price.toReal()
         }
 
         holder.itemView.setOnClickListener {
-            item.quantity++
-            val previousPosition = selectedPosition
-            selectedPosition = holder.adapterPosition
+            val now = System.currentTimeMillis()
+            if (now - lastClickTime < 300) return@setOnClickListener // Evita clique duplo
+            lastClickTime = now
 
-            if (previousPosition != selectedPosition) {
-                notifyItemChanged(previousPosition)
-                notifyItemChanged(selectedPosition)
-            }
+            item.quantity++
+            val previous = selectedPosition
+            selectedPosition = position
+
+            if (previous != RecyclerView.NO_POSITION) notifyItemChanged(previous, "partial")
+            notifyItemChanged(position, "partial")
 
             notifyTotalChanged()
         }
 
         holder.btnPlus.setOnClickListener {
             item.quantity++
-            notifyItemChanged(holder.adapterPosition)
+            notifyItemChanged(position, "partial")
             notifyTotalChanged()
         }
 
         holder.btnMinus.setOnClickListener {
-            if (item.quantity == 0) item.quantity = 0 else item.quantity--
-            notifyItemChanged(holder.adapterPosition)
+            if (item.quantity > 0) item.quantity--
+            notifyItemChanged(position, "partial")
             notifyTotalChanged()
         }
     }
@@ -84,18 +111,15 @@ class ProductAdapter(
         if (query.isEmpty()) {
             filteredList.addAll(originalList)
         } else {
-            val lowercaseQuery = query.lowercase()
-            filteredList.addAll(originalList.filter {
-                it.name.lowercase().contains(lowercaseQuery)
-            })
+            val lower = query.lowercase()
+            filteredList.addAll(originalList.filter { it.name.lowercase().contains(lower) })
         }
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0, filteredList.size, "partial")
         notifyTotalChanged()
     }
 
     private fun notifyTotalChanged() {
-        val total = filteredList.sumOf { it.price * it.quantity }
-        onTotalChanged(total)
+        onTotalChanged(getTotal())
     }
 
     fun getTotal(): Double {

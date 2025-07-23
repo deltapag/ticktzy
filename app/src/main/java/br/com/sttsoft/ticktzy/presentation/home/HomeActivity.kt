@@ -11,6 +11,7 @@ import br.com.sttsoft.ticktzy.presentation.cashier.home.ActivityCashierHome
 import br.com.sttsoft.ticktzy.presentation.charge.ChargeActivity
 import br.com.sttsoft.ticktzy.presentation.config.ConfigActivity
 import br.com.sttsoft.ticktzy.presentation.sale.ui.SaleActivity
+import br.com.sttsoft.ticktzy.presentation.sitef.ActivitySitefHome
 
 class HomeActivity: BaseActivity() {
 
@@ -49,6 +50,10 @@ class HomeActivity: BaseActivity() {
 
         binding.btnCashierFunctions.setOnClickListener {
             startActivity(Intent(this, ActivityCashierHome::class.java))
+        }
+
+        binding.btnAdministrativesFunctions.setOnClickListener {
+            startActivity(Intent(this, ActivitySitefHome::class.java))
         }
     }
 }
