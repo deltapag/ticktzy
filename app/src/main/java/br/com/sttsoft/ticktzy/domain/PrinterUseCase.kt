@@ -1,5 +1,6 @@
 package br.com.sttsoft.ticktzy.domain
 
+import android.util.Log
 import br.com.sttsoft.ticktzy.extensions.toReal
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import com.sunmi.peripheral.printer.SunmiPrinterService
@@ -36,6 +37,7 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
 
     fun testPrinter() {
         printerService?.apply {
+
             sendRAWData(boldOff, null)
             lineWrap(1, null)
 
@@ -52,16 +54,75 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
         }
     }
 
+
+    fun moneyReceiptPrint(
+        infos: InfoResponse,
+        valueReceived: Double,
+        valueChanged: Double,
+        valueCharged: Double
+    ) {
+        printerService?.apply {
+            val boldOn = byteArrayOf(0x1B, 0x45, 0x01)
+            val boldOff = byteArrayOf(0x1B, 0x45, 0x00)
+
+            val now = Date()
+            val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm")
+            val formattedDate = formatter.format(now)
+
+            // Cabeçalho
+            setAlignment(1, null) // Centralizado
+            sendRAWData(boldOn, null)
+            setFontSize(20f, null)
+            printText(infos.Pagamento.lojasSitef.firstOrNull()!!.nomeLoja+"\n", null)
+            setFontSize(26f, null)
+            printText("PAGAMENTO EM DINHEIRO\n", null)
+
+            setFontSize(20f, null)
+            printText("$formattedDate\n", null)
+
+            lineWrap(1, null)
+
+            // Valores
+            setAlignment(0, null) // Esquerda
+            sendRAWData(boldOff, null)
+            setFontSize(22f, null)
+            printText("VALOR COBRADO:   ${valueCharged.toReal()}\n", null)
+            printText("VALOR RECEBIDO:  ${valueReceived.toReal()}\n", null)
+
+            // Separador
+            printText("------------------------------\n", null)
+
+            // Troco em destaque
+            sendRAWData(boldOn, null)
+            printText("TROCO:           ${valueChanged.toReal()}\n", null)
+            sendRAWData(boldOff, null)
+
+            lineWrap(2, null)
+
+            // Rodapé
+            setAlignment(1, null)
+            setFontSize(20f, null)
+            printText("Sem validade fiscal.\nApenas para registro!\n", null)
+
+            lineWrap(4, null)
+        }
+    }
+
     fun ticketPrint(infos: InfoResponse, productName: String, productPrice: Double) {
         printerService?.apply {
             val boldOn = byteArrayOf(0x1B, 0x45, 0x01)
             val boldOff = byteArrayOf(0x1B, 0x45, 0x00)
+
+            val now = Date()
+            val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm")
+            val formattedDate = formatter.format(now)
 
             // Inicial
             setAlignment(1, null) // Centralizado
             sendRAWData(boldOff, null)
             setFontSize(20f, null)
             printText(infos.Pagamento.lojasSitef.firstOrNull()!!.nomeLoja+"\n", null)
+            printText("$formattedDate\n", null)
 
             lineWrap(1, null)
 

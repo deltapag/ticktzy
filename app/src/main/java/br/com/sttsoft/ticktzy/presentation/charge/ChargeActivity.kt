@@ -13,6 +13,7 @@ import br.com.execucao.posmp_api.store.AppStatus
 import br.com.execucao.smartPOSService.printer.IOnPrintFinished
 import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivityChargeBinding
+import br.com.sttsoft.ticktzy.domain.PrinterUseCase
 import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.extensions.getPref
@@ -22,6 +23,9 @@ import br.com.sttsoft.ticktzy.presentation.dialogs.ChangeDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.PaymentTypeChooseDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
+import com.sunmi.peripheral.printer.InnerPrinterCallback
+import com.sunmi.peripheral.printer.InnerPrinterManager
+import com.sunmi.peripheral.printer.SunmiPrinterService
 import java.text.DecimalFormat
 
 
@@ -39,6 +43,8 @@ class ChargeActivity: BaseActivity() {
 
     private lateinit var printerService: PrinterService
 
+    private var sunmiPrinterService: SunmiPrinterService? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -50,8 +56,22 @@ class ChargeActivity: BaseActivity() {
 
         initActivityResultLaucher()
 
+        initPrinter()
+
         setNumberClicks()
         setButtonsClicks()
+    }
+
+    private fun initPrinter() {
+        InnerPrinterManager.getInstance().bindService(this, object : InnerPrinterCallback() {
+            override fun onConnected(service: SunmiPrinterService) {
+                sunmiPrinterService = service
+            }
+
+            override fun onDisconnected() {
+                sunmiPrinterService = null
+            }
+        })
     }
 
     private fun initActivityResultLaucher() {
@@ -132,18 +152,30 @@ class ChargeActivity: BaseActivity() {
                         "debit" -> { generatePaymentIntent("2", true) }
                         "credit" -> { generatePaymentIntent("3", true) }
                         "money" -> {
-                            ChangeDialog(this, (currentValue.toDouble() / 100)) { valorRecebido, troco ->
+                            ChangeDialog(this, (currentValue.toDouble() / 100)) { valorRecebido, troco, dialog ->
 
-                                this.savePref("CHARGE_MADE", this.getPref("CHARGE_MADE", 0) + 1)
-                                this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
+                                if (valorRecebido > 0.0 && valorRecebido >= (currentValue.toDouble() / 100)) {
+                                    this.savePref("CHARGE_MADE", this.getPref("CHARGE_MADE", 0) + 1)
+                                    this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
 
-                                var caixa = this.getPref("CAIXA", 0L)
+                                    var caixa = this.getPref("CAIXA", 0L)
 
-                                caixa += ((valorRecebido - troco) * 100).toLong()
+                                    caixa += ((valorRecebido - troco) * 100).toLong()
 
-                                this.savePref("CAIXA", caixa)
+                                    this.savePref("CAIXA", caixa)
 
-                                finish()
+                                    infos?.let { info ->
+                                        PrinterUseCase(sunmiPrinterService).moneyReceiptPrint(info, valorRecebido, troco, (currentValue.toDouble() / 100))
+                                    }
+
+                                    dialog.dismiss()
+
+                                    finish()
+
+                                } else {
+                                    showToast("Valor insuficiente!")
+                                }
+
                             }.show()
                         }
                     }

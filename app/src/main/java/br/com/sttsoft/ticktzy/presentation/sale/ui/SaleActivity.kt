@@ -147,20 +147,35 @@ class SaleActivity: BaseActivity() {
 
         binding.paymentBar.setOnCashClick {
             if (verifyTotal()) {
-                ChangeDialog(this, adapter.getTotal()) { valorRecebido, troco ->
+                ChangeDialog(this, adapter.getTotal()) { valorRecebido, troco, dialog ->
 
-                    this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
-                    this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
+                    if (valorRecebido > 0.0 && valorRecebido >= adapter.getTotal()) {
 
-                    var caixa = this.getPref("CAIXA", 0L)
+                        this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
+                        this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
 
-                    caixa += ((valorRecebido - troco) * 100).toLong()
+                        var caixa = this.getPref("CAIXA", 0L)
 
-                    this.savePref("CAIXA", caixa)
+                        caixa += ((valorRecebido - troco) * 100).toLong()
 
-                    type = "money"
+                        this.savePref("CAIXA", caixa)
 
-                    printTickets()
+                        type = "money"
+
+                        infos?.let { info ->
+                            PrinterUseCase(sunmiPrinterService).moneyReceiptPrint(info, valorRecebido, troco, adapter.getTotal())
+                        }
+
+                        printTickets()
+
+                        dialog.dismiss()
+
+                        finish()
+
+                    } else {
+                        showToast("Valor insuficiente!")
+                    }
+
                 }.show()
             }
         }

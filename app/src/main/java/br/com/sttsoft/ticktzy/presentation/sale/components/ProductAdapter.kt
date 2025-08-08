@@ -114,7 +114,7 @@ class ProductAdapter(
             val lower = query.lowercase()
             filteredList.addAll(originalList.filter { it.name.lowercase().contains(lower) })
         }
-        notifyItemRangeChanged(0, filteredList.size, "partial")
+        notifyDataSetChanged()
         notifyTotalChanged()
     }
 

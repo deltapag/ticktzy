@@ -9,7 +9,7 @@ import br.com.sttsoft.ticktzy.databinding.DialogChangeBinding
 class ChangeDialog (
     private val context: Context,
     private val chargeValue: Double,
-    private val onConfirm: (value: Double, valueChange: Double) -> Unit
+    private val onConfirm: (value: Double, valueChange: Double, dialog: ChangeDialog) -> Unit
 ){
 
     private var input = ""
@@ -54,8 +54,7 @@ class ChangeDialog (
             binding.llConfirm.setOnClickListener {
                 val value = getValue()
                 val change = value - chargeValue
-                onConfirm(value, change)
-                dialog.dismiss()
+                onConfirm(value, change, this)
             }
 
             dialog.window?.setLayout(
@@ -84,6 +83,12 @@ class ChangeDialog (
 
     private fun format(valor: Double): String {
         return "R$ %.2f".format(valor).replace('.', ',')
+    }
+
+    fun dismiss() {
+        if (::dialog.isInitialized && dialog.isShowing) {
+            dialog.dismiss()
+        }
     }
 
 }
