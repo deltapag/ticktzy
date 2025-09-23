@@ -1,5 +1,6 @@
 package br.com.sttsoft.ticktzy.presentation.charge
 
+import android.app.ComponentCaller
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -31,6 +32,8 @@ import java.text.DecimalFormat
 
 class ChargeActivity: BaseActivity() {
 
+    override val enablePrinterBinding = true
+
     private val binding: ActivityChargeBinding by lazy {
         ActivityChargeBinding.inflate(layoutInflater)
     }
@@ -43,7 +46,7 @@ class ChargeActivity: BaseActivity() {
 
     private lateinit var printerService: PrinterService
 
-    private var sunmiPrinterService: SunmiPrinterService? = null
+    private lateinit var type: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,22 +59,8 @@ class ChargeActivity: BaseActivity() {
 
         initActivityResultLaucher()
 
-        initPrinter()
-
         setNumberClicks()
         setButtonsClicks()
-    }
-
-    private fun initPrinter() {
-        InnerPrinterManager.getInstance().bindService(this, object : InnerPrinterCallback() {
-            override fun onConnected(service: SunmiPrinterService) {
-                sunmiPrinterService = service
-            }
-
-            override fun onDisconnected() {
-                sunmiPrinterService = null
-            }
-        })
     }
 
     private fun initActivityResultLaucher() {
@@ -80,6 +69,9 @@ class ChargeActivity: BaseActivity() {
             val bundle = data?.extras
             if (bundle != null) {
                 if (result.resultCode == RESULT_OK) {
+
+                    handlePaymentType()
+
                     this.savePref("CHARGE_MADE", this.getPref("CHARGE_MADE", 0) + 1)
                     val comprovanteEstab = bundle.getString("VIA_ESTABELECIMENTO")
                     if (comprovanteEstab != null && comprovanteEstab.trim { it <= ' ' }.isNotEmpty()) {
@@ -92,15 +84,17 @@ class ChargeActivity: BaseActivity() {
                                 val comprovanteCliente = bundle.getString("VIA_CLIENTE")
                                 if (comprovanteCliente != null && comprovanteCliente.trim { it <= ' ' }.isNotEmpty()) {
                                     printReceipt(comprovanteCliente)
+                                    finish()
                                 }
                             }
-                            "no" -> {}
+                            "no" -> {
+                                finish()
+                            }
                         }
                     },getString(R.string.dialog_print_question_title), getString(R.string.dialog_print_question_body))
                     dialog.show(supportFragmentManager, "PrintQuestionDialog")
+
                 }
-            } else {
-                Toast.makeText(this, "Nenhum dado retornado", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -149,14 +143,30 @@ class ChargeActivity: BaseActivity() {
             if (verifyBeforePay()) {
                 val dialog = PaymentTypeChooseDialog ({ tipo ->
                     when (tipo) {
-                        "debit" -> { generatePaymentIntent("2", true) }
-                        "credit" -> { generatePaymentIntent("3", true) }
+                        "sitef" -> {
+                            type = "sitef"
+                            generatePaymentIntent("0", false)
+                        }
+                        "debit" -> {
+                            type = "debit"
+                            generatePaymentIntent("2", false)
+                        }
+                        "credit" -> {
+                            type = "credit"
+                            generatePaymentIntent("3", false)
+                        }
                         "money" -> {
+                            type = "money"
+
                             ChangeDialog(this, (currentValue.toDouble() / 100)) { valorRecebido, troco, dialog ->
 
                                 if (valorRecebido > 0.0 && valorRecebido >= (currentValue.toDouble() / 100)) {
                                     this.savePref("CHARGE_MADE", this.getPref("CHARGE_MADE", 0) + 1)
                                     this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
+
+                                    var valor = (valorRecebido - troco)
+
+                                    this.savePref("MONEY_VALUE", this.getPref("MONEY_VALUE", 0.0) + valor)
 
                                     var caixa = this.getPref("CAIXA", 0L)
 
@@ -185,6 +195,7 @@ class ChargeActivity: BaseActivity() {
         }
 
         binding.ivPix.setOnClickListener {
+            type = "pix"
             generatePaymentIntent("122", true)
         }
     }
@@ -210,7 +221,10 @@ class ChargeActivity: BaseActivity() {
     }
 
     private fun generatePaymentIntent(modalidade: String, isPix: Boolean = false) {
-        activityResultLauncher.launch(infos?.let { SitefUseCase().payment(it, currentValue.toDouble(), modalidade, isPix) })
+
+        val value = currentValue / 100.0
+        infos?.let { SitefUseCase().payment(it, value, modalidade, isPix, this.getPref("TLS_ENABLED", false)) }
+            ?.let { activityResultLauncher.launch(it) }
     }
 
     private fun initializeSmartPosHelper() {
@@ -256,6 +270,23 @@ class ChargeActivity: BaseActivity() {
                 })
         } else {
             Toast.makeText(this, "Impressora indisponível", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun handlePaymentType() {
+        when (type) {
+            "pix" -> {
+                this.savePref("PIX_TYPE", this.getPref("PIX_TYPE", 0) + 1)
+                this.savePref("PIX_VALUE", this.getPref("PIX_VALUE", 0.0) + (currentValue.toDouble() / 100))
+            }
+            "debit" -> {
+                this.savePref("DEBIT_TYPE", this.getPref("DEBIT_TYPE", 0) + 1)
+                this.savePref("DEBIT_VALUE", this.getPref("DEBIT_VALUE", 0.0) + (currentValue.toDouble() / 100))
+            }
+            "credit" -> {
+                this.savePref("CREDIT_TYPE", this.getPref("CREDIT_TYPE", 0) + 1)
+                this.savePref("CREDIT_VALUE", this.getPref("CREDIT_VALUE", 0.0) + (currentValue.toDouble() / 100))
+            }
         }
     }
 

@@ -23,6 +23,7 @@
     <string name="text_dialog_payment_type_choose_debit_card">CARTÃO DE DÉBITO</string>
     <string name="text_dialog_payment_type_choose_credit_card">CARTÃO DE CRÉDITO</string>
     <string name="text_dialog_payment_type_choose_money">DINHEIRO</string>
+    <string name="text_dialog_payment_type_choose_sitef_direto">SITEF DIRETO</string>
 
     <string name="dialog_print_question_title">impressão de via</string>
     <string name="dialog_print_question_body">DESEJA IMPRIMIR A VIA DO CLIENTE?</string>
@@ -42,10 +43,14 @@
     <string name="button_text_home_config">Configurações</string>
 
     <string name="button_text_config_sitef_conection_test">Teste de conexão SITEF</string>
+    <string name="button_text_config_sitef_direct_access">SITEF - Acesso Direto</string>
     <string name="button_text_config_sitef_token_config">Config. Token SITEF</string>
     <string name="button_text_config_sitef_token_config_infos">Config. SITEF Infos</string>
     <string name="button_text_config_test_printer">Teste de impressora</string>
     <string name="button_text_config_product_refresh">Buscar produtos</string>
+
+    <string name="button_text_config_enable_tls">HABILITADO</string>
+    <string name="button_text_config_disable_tls">NÃO HABILITADO</string>
 
     <!-- Texts -->
 
@@ -79,18 +84,21 @@
     <string name="text_cashier_table_charge_made">Cobranças Realizadas</string>
     <string name="text_cashier_table_sangria_made">Sangrias Realizadas</string>
     <string name="text_cashier_table_reinforce_made">Reforços Realizados</string>
+    <string name="text_cashier_table_cancels_made">Cancelamentos Realizados</string>
 
     <string name="text_cashier_table_type_debit">Cartão de Débito</string>
     <string name="text_cashier_table_type_credit">Cartão de Crédito</string>
     <string name="text_cashier_table_type_pix">Pix</string>
     <string name="text_cashier_table_type_money">Dinheiro</string>
 
+    <string name="text_cashier_table_value">(%s) %s</string>
+
     <string name="text_cashier_table_start_money">Dinheiro Inicial</string>
     <string name="text_cashier_table_sangria_money">Total de Sangrias </string>
     <string name="text_cashier_table_reinforce_money">Total de Reforços </string>
     <string name="text_cashier_table_finish_money">Dinheiro em Caixa</string>
 
-    <string name="button_text_sitef_reprint">Reimpressãoo</string>
+    <string name="button_text_sitef_reprint">Reimpressão</string>
     <string name="button_text_sitef_cancel">Estorno</string>
     <string name="button_text_sitef_send_logs">Envio de Logs SITEF</string>
 </resources>

@@ -6,6 +6,7 @@ import br.com.sttsoft.ticktzy.BuildConfig
 import br.com.sttsoft.ticktzy.R
 
 import br.com.sttsoft.ticktzy.databinding.ActivityHomeBinding
+import br.com.sttsoft.ticktzy.features.sale.ui.SalesActivity
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.presentation.cashier.home.ActivityCashierHome
 import br.com.sttsoft.ticktzy.presentation.charge.ChargeActivity

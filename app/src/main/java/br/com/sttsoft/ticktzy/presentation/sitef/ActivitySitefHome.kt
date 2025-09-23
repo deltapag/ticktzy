@@ -2,6 +2,7 @@ package br.com.sttsoft.ticktzy.presentation.sitef
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -9,10 +10,13 @@ import br.com.execucao.posmp_api.SmartPosHelper
 import br.com.execucao.posmp_api.printer.PrinterService
 import br.com.execucao.posmp_api.store.AppStatus
 import br.com.execucao.smartPOSService.printer.IOnPrintFinished
+import br.com.sttsoft.ticktzy.BuildConfig
 import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivitySitefHomeBinding
 import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
+import br.com.sttsoft.ticktzy.extensions.getPref
+import br.com.sttsoft.ticktzy.extensions.savePref
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
@@ -28,6 +32,8 @@ class ActivitySitefHome: BaseActivity() {
     private lateinit var printerService: PrinterService
 
     private var infos: InfoResponse? = null
+
+    private lateinit var type: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,15 +54,36 @@ class ActivitySitefHome: BaseActivity() {
             finish()
         }
         binding.btnReprint.setOnClickListener {
-            activityResultLauncher.launch(infos?.let { SitefUseCase().reprint(it) })
+            type = "reprint"
+            infos?.let { SitefUseCase().reprint(it, this.getPref("TLS_ENABLED", false)) }
+                ?.let { it1 -> activityResultLauncher.launch(it1) }
         }
 
         binding.btnCancel.setOnClickListener {
-            activityResultLauncher.launch(infos?.let { SitefUseCase().cancelation(it) })
+            type = "cancel"
+
+            infos?.let { SitefUseCase().cancelation(it, this.getPref("TLS_ENABLED", false)) }
+                ?.let { it1 -> activityResultLauncher.launch(it1) }
         }
 
         binding.btnSendLogs.setOnClickListener {
-            activityResultLauncher.launch(infos?.let { SitefUseCase().trace(it) })
+            type = "logs"
+            infos?.let { SitefUseCase().trace(it, this.getPref("TLS_ENABLED", false)) }
+                ?.let { it1 -> activityResultLauncher.launch(it1) }
+        }
+
+        if (!BuildConfig.DEBUG) {
+            binding.btnSitefDirectAccess.visibility = View.GONE
+        }
+
+        binding.btnSitefDirectAccess.setOnClickListener {
+            type = "sitef"
+            val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
+
+            infos?.let {
+                var i = SitefUseCase().directAccess(it, this.getPref("TLS_ENABLED", false))
+                activityResultLauncher.launch(i)
+            }
         }
     }
 
@@ -77,25 +104,35 @@ class ActivitySitefHome: BaseActivity() {
             val bundle = data?.extras
             if (bundle != null) {
                 if (result.resultCode == RESULT_OK) {
+                    handleType()
+
                     val comprovanteEstab = bundle.getString("VIA_ESTABELECIMENTO")
+                    val comprovanteCli = bundle.getString("VIA_CLIENTE")
                     if (comprovanteEstab != null && comprovanteEstab.trim { it <= ' ' }.isNotEmpty()) {
                         printReceipt(comprovanteEstab)
+                    } else if (comprovanteCli != null && comprovanteCli.trim { it <= ' ' }.isNotEmpty()) {
+                        printReceipt(comprovanteCli)
                     }
 
-                    val dialog = ConfirmDialog ({ option ->
-                        when (option) {
-                            "yes" -> {
-                                val comprovanteCliente = bundle.getString("VIA_CLIENTE")
-                                if (comprovanteCliente != null && comprovanteCliente.trim { it <= ' ' }.isNotEmpty()) {
-                                    printReceipt(comprovanteCliente)
+                    if (!type.equals("reprint")) {
+                        val dialog = ConfirmDialog ({ option ->
+                            when (option) {
+                                "yes" -> {
+                                    if (comprovanteCli != null && comprovanteCli.trim { it <= ' ' }.isNotEmpty()) {
+                                        printReceipt(comprovanteCli)
+
+                                        finish()
+                                    }
+                                }
+                                "no" -> {
+                                    finish()
                                 }
                             }
-                            "no" -> {}
-                        }
-                    },getString(R.string.dialog_print_question_title), getString(R.string.dialog_print_question_body))
-                    dialog.show(supportFragmentManager, "PrintQuestionDialog")
-
-                    finish()
+                        },getString(R.string.dialog_print_question_title), getString(R.string.dialog_print_question_body))
+                        dialog.show(supportFragmentManager, "PrintQuestionDialog")
+                    } else {
+                        finish()
+                    }
                 }
             } else {
                 finish()
@@ -135,6 +172,15 @@ class ActivitySitefHome: BaseActivity() {
                 })
         } else {
             Toast.makeText(this, "Impressora indisponível", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    private fun handleType() {
+        when (type) {
+            "cancel" -> {
+                this.savePref("CANCELS_MADE", this.getPref("CANCELS_MADE", 0) + 1)
+            }
         }
     }
 }

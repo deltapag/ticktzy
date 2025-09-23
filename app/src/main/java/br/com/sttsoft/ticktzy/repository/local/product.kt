@@ -6,5 +6,6 @@ data class product(
     val photo: String,
     val price: Double,
     var isSelected: Boolean = false,
-    var quantity: Int = 0
+    var quantity: Int = 0,
+    var habilitado: Boolean = false
 )

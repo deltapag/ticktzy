@@ -13,34 +13,21 @@ import java.text.DecimalFormat
 
 abstract class ActivityCashierBase: BaseActivity() {
 
+    override val enablePrinterBinding = true
+
     val binding: ActivityCashierBinding by lazy {
         ActivityCashierBinding.inflate(layoutInflater)
     }
 
     var currentValue: Long = 0L
 
-    var sunmiPrinterService: SunmiPrinterService? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        initPrinter()
 
         setNumberClicks()
         setButtonsClicks()
-    }
-
-    private fun initPrinter() {
-        InnerPrinterManager.getInstance().bindService(this, object : InnerPrinterCallback() {
-            override fun onConnected(service: SunmiPrinterService) {
-                sunmiPrinterService = service
-            }
-
-            override fun onDisconnected() {
-                sunmiPrinterService = null
-            }
-        })
     }
 
     fun setNumberClicks() {

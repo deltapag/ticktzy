@@ -11,6 +11,7 @@ import br.com.sttsoft.ticktzy.domain.ProductCacheUseCase
 import br.com.sttsoft.ticktzy.domain.ProductSyncUseCase
 import br.com.sttsoft.ticktzy.domain.TerminalnfosUseCase
 import br.com.sttsoft.ticktzy.extensions.getPref
+import br.com.sttsoft.ticktzy.extensions.savePref
 import br.com.sttsoft.ticktzy.extensions.saveToPrefs
 import br.com.sttsoft.ticktzy.presentation.cashier.start.ActivityCashierStart
 import br.com.sttsoft.ticktzy.presentation.home.HomeActivity
@@ -29,6 +30,10 @@ class SplashActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        val infos = TerminalnfosUseCase().invoke()
+
+        binding.tvSerial.text = infos.NumeroSerie
+
         binding.tvStatus.text = "Coletando informações do servidor..."
 
         if (!BuildConfig.useAPI) {
@@ -36,7 +41,6 @@ class SplashActivity: BaseActivity() {
         } else {
             lifecycleScope.launch {
                 try {
-                    val infos = TerminalnfosUseCase().invoke()
                     val useCaseInfos = GetInfosUseCase(TerminalWrapper(infos))
 
                     val infosResponse = withContext(Dispatchers.IO) {
@@ -44,6 +48,11 @@ class SplashActivity: BaseActivity() {
                     }
 
                     infosResponse?.saveToPrefs(this@SplashActivity, "SITEF_INFOS")
+
+                    if (!BuildConfig.DEBUG) {
+                        this@SplashActivity.savePref("TLS_ENABLED", true)
+                    }
+
                     binding.tvStatus.text = "Coletando produtos..."
 
                     val cnpj = infosResponse

@@ -64,6 +64,21 @@
         android:layout_height="wrap_content"  />
 
     <TextView
+        android:id="@+id/btnSitefDireto"
+        android:text="@string/text_dialog_payment_type_choose_sitef_direto"
+        android:textColor="@android:color/white"
+        android:background="@drawable/button_dialog_payment_type_choose_default"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"  />
+
+    <TextView
         android:id="@+id/btnCancelar"
         android:text="@string/cancel"
         android:textColor="@android:color/white"

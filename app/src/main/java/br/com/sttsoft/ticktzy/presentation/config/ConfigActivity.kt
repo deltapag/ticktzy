@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
+import br.com.sttsoft.ticktzy.BuildConfig
 import br.com.sttsoft.ticktzy.databinding.ActivityConfigBinding
 import br.com.sttsoft.ticktzy.domain.GetProductsUseCase
 import br.com.sttsoft.ticktzy.domain.PrinterUseCase
@@ -14,6 +16,7 @@ import br.com.sttsoft.ticktzy.domain.ProductCacheUseCase
 import br.com.sttsoft.ticktzy.domain.ProductSyncUseCase
 import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
+import br.com.sttsoft.ticktzy.extensions.getPref
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import com.sunmi.peripheral.printer.InnerPrinterCallback
@@ -25,13 +28,13 @@ import kotlinx.coroutines.withContext
 
 class ConfigActivity: BaseActivity() {
 
+    override val enablePrinterBinding = true
+
     private val binding: ActivityConfigBinding by lazy {
         ActivityConfigBinding.inflate(layoutInflater)
     }
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-
-    private var sunmiPrinterService: SunmiPrinterService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,21 +42,11 @@ class ConfigActivity: BaseActivity() {
 
         initActivityResultLaucher()
 
-        initPrinter()
-
         setListeners()
-    }
 
-    fun initPrinter() {
-        InnerPrinterManager.getInstance().bindService(this, object : InnerPrinterCallback() {
-            override fun onConnected(service: SunmiPrinterService) {
-                sunmiPrinterService = service
-            }
-
-            override fun onDisconnected() {
-                sunmiPrinterService = null
-            }
-        })
+        if (!BuildConfig.DEBUG) {
+            binding.btnSitefConfig.visibility = View.GONE
+        }
     }
 
     fun initActivityResultLaucher() {
@@ -84,6 +77,15 @@ class ConfigActivity: BaseActivity() {
 
             infos?.let {
                 var i = SitefUseCase().tokenConfig(it)
+                activityResultLauncher.launch(i)
+            }
+        }
+
+        binding.btnSitefDirectAccess.setOnClickListener {
+            val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
+
+            infos?.let {
+                var i = SitefUseCase().directAccess(it, this.getPref("TLS_ENABLED", false))
                 activityResultLauncher.launch(i)
             }
         }

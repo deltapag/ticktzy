@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import br.com.sttsoft.ticktzy.BuildConfig
 import br.com.sttsoft.ticktzy.R
 
 class PaymentTypeChooseDialog(
@@ -24,9 +25,14 @@ class PaymentTypeChooseDialog(
         val btnCredito = view.findViewById<TextView>(R.id.btnCredito)
         val btnCancelar = view.findViewById<TextView>(R.id.btnCancelar)
         val btnMoney = view.findViewById<TextView>(R.id.btnDinheiro)
+        val btnSitefDireto = view.findViewById<TextView>(R.id.btnSitefDireto)
 
         if (!moneyIsEnable) {
             btnMoney.visibility = View.GONE
+        }
+
+        if (!BuildConfig.DEBUG) {
+            btnSitefDireto.visibility = View.GONE
         }
 
         btnDebito.setOnClickListener {
@@ -41,6 +47,11 @@ class PaymentTypeChooseDialog(
 
         btnMoney.setOnClickListener {
             onSelect("money")
+            dismiss()
+        }
+
+        btnSitefDireto.setOnClickListener {
+            onSelect("sitef")
             dismiss()
         }
 

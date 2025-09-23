@@ -1,5 +1,6 @@
 package br.com.sttsoft.ticktzy.presentation.sale.components
 
+import br.com.sttsoft.ticktzy.presentation.sale.components.ProductAdapter
 import br.com.sttsoft.ticktzy.repository.local.product
 import org.junit.Assert.assertEquals
 import org.junit.Test

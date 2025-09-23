@@ -35,23 +35,25 @@ class ProductAdapter(
         val item = filteredList[position]
         val isSelected = position == selectedPosition
 
-        if (payloads.isEmpty()) {
-            onBindViewHolder(holder, position)
-        } else {
-            // Atualiza badge
-            holder.tvBadge.text = item.quantity.toString()
-            holder.tvBadge.visibility = if (item.quantity > 0) View.VISIBLE else View.GONE
-
-            // Atualiza visibilidade dos botões
-            holder.btnPlus.visibility = if (isSelected) View.VISIBLE else View.GONE
-            holder.btnMinus.visibility = if (isSelected) View.VISIBLE else View.GONE
-
-            // Atualiza visual de seleção
-            if (item.photo.isNotEmpty()) {
-                holder.ivProduct.alpha = if (isSelected) 0.5f else 1f
+        if (item.habilitado) {
+            if (payloads.isEmpty()) {
+                onBindViewHolder(holder, position)
             } else {
-                holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
-                holder.tvName.visibility = if (isSelected) View.GONE else View.VISIBLE
+                // Atualiza badge
+                holder.tvBadge.text = item.quantity.toString()
+                holder.tvBadge.visibility = if (item.quantity > 0) View.VISIBLE else View.GONE
+
+                // Atualiza visibilidade dos botões
+                holder.btnPlus.visibility = if (isSelected) View.VISIBLE else View.GONE
+                holder.btnMinus.visibility = if (isSelected) View.VISIBLE else View.GONE
+
+                // Atualiza visual de seleção
+                if (item.photo.isNotEmpty()) {
+                    holder.ivProduct.alpha = if (isSelected) 0.5f else 1f
+                } else {
+                    holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
+                    holder.tvName.visibility = if (isSelected) View.GONE else View.VISIBLE
+                }
             }
         }
     }

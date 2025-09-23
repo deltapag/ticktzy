@@ -35,7 +35,7 @@ class SaleActivity: BaseActivity() {
         ActivitySaleBinding.inflate(layoutInflater)
     }
 
-    private var sunmiPrinterService: SunmiPrinterService? = null
+    override val enablePrinterBinding = true
 
     private lateinit var adapter: ProductAdapter
 
@@ -58,7 +58,6 @@ class SaleActivity: BaseActivity() {
 
         infos = this.getFromPrefs("SITEF_INFOS")
 
-        initPrinter()
 
         initActivityResultLaucher()
 
@@ -66,18 +65,6 @@ class SaleActivity: BaseActivity() {
         setOnClickListeners()
 
         getProducts()
-    }
-
-    private fun initPrinter() {
-        InnerPrinterManager.getInstance().bindService(this, object : InnerPrinterCallback() {
-            override fun onConnected(service: SunmiPrinterService) {
-                sunmiPrinterService = service
-            }
-
-            override fun onDisconnected() {
-                sunmiPrinterService = null
-            }
-        })
     }
 
     private fun initActivityResultLaucher() {
@@ -122,6 +109,9 @@ class SaleActivity: BaseActivity() {
             productList = produtos
             setAdapter()
             hideLoading()
+        } else {
+            showToast("Sem Produtos cadastrados!", true)
+            finish()
         }
     }
 
@@ -153,6 +143,10 @@ class SaleActivity: BaseActivity() {
 
                         this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
                         this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
+
+                        var valor = (valorRecebido - troco)
+
+                        this.savePref("MONEY_VALUE", this.getPref("MONEY_VALUE", 0.0) + valor)
 
                         var caixa = this.getPref("CAIXA", 0L)
 
@@ -191,6 +185,10 @@ class SaleActivity: BaseActivity() {
             if (verifyTotal()) {
                 val dialog = PaymentTypeChooseDialog ({ tipo ->
                     when (tipo) {
+                        "sitef" -> {
+                            type = "sitef"
+                            generatePaymentIntent("0")
+                        }
                         "debit" -> {
                             type = "debit"
                             generatePaymentIntent("2")
@@ -207,7 +205,8 @@ class SaleActivity: BaseActivity() {
     }
 
     private fun generatePaymentIntent(modalidade: String, isPix: Boolean = false) {
-        activityResultLauncher.launch(infos?.let { SitefUseCase().payment(it, adapter.getTotal(), modalidade, isPix) })
+        infos?.let { SitefUseCase().payment(it, adapter.getTotal(), modalidade, isPix, this.getPref("TLS_ENABLED", false)) }
+            ?.let { activityResultLauncher.launch(it) }
     }
 
     private fun verifyTotal(): Boolean {
@@ -285,12 +284,15 @@ class SaleActivity: BaseActivity() {
         when (type) {
             "pix" -> {
                 this.savePref("PIX_TYPE", this.getPref("PIX_TYPE", 0) + 1)
+                this.savePref("PIX_VALUE", this.getPref("PIX_VALUE", 0.0) + adapter.getTotal())
             }
             "debit" -> {
                 this.savePref("DEBIT_TYPE", this.getPref("DEBIT_TYPE", 0) + 1)
+                this.savePref("DEBIT_VALUE", this.getPref("DEBIT_VALUE", 0.0) + adapter.getTotal())
             }
             "credit" -> {
                 this.savePref("CREDIT_TYPE", this.getPref("CREDIT_TYPE", 0) + 1)
+                this.savePref("CREDIT_VALUE", this.getPref("CREDIT_VALUE", 0.0) + adapter.getTotal())
             }
         }
     }
