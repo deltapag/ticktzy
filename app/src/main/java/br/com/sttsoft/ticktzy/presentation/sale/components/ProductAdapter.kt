@@ -5,9 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import br.com.sttsoft.ticktzy.R
+import br.com.sttsoft.ticktzy.extensions.isLink
 import br.com.sttsoft.ticktzy.extensions.setImageFromBase64
 import br.com.sttsoft.ticktzy.extensions.toReal
 import br.com.sttsoft.ticktzy.repository.local.product
+import coil.load
 
 class ProductAdapter(
     productList: List<product>,
@@ -15,7 +17,7 @@ class ProductAdapter(
 ) : RecyclerView.Adapter<ProductViewHolder>() {
 
     private val originalList = productList.toList()
-    private val filteredList = mutableListOf<product>().apply { addAll(productList) }
+    private val filteredList = mutableListOf<product>().apply { addAll(originalList.filter { it.habilitado }) }
 
     private var selectedPosition: Int = RecyclerView.NO_POSITION
     private var lastClickTime = 0L
@@ -51,7 +53,12 @@ class ProductAdapter(
                 if (item.photo.isNotEmpty()) {
                     holder.ivProduct.alpha = if (isSelected) 0.5f else 1f
                 } else {
-                    holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
+                    if (item.photo.isNotEmpty()) {
+                        holder.tvTitle.text = if (isSelected) item.name else String.format("%s \n%s", item.price.toReal(), item.name)
+                    } else {
+                        holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
+                    }
+
                     holder.tvName.visibility = if (isSelected) View.GONE else View.VISIBLE
                 }
             }
@@ -71,13 +78,23 @@ class ProductAdapter(
             holder.tvName.text = item.name
             holder.tvName.visibility = if (isSelected) View.GONE else View.VISIBLE
             holder.ivProduct.visibility = View.GONE
-            holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
+            if (item.photo.isNotEmpty()) {
+                holder.tvTitle.text = if (isSelected) item.name else String.format("%s \n%s", item.price.toReal(), item.name)
+            } else {
+                holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
+            }
         } else {
-            holder.ivProduct.setImageFromBase64(item.photo)
+
+            if (item.photo.isLink()) {
+                holder.ivProduct.load(item.photo)
+            } else {
+                holder.ivProduct.setImageFromBase64(item.photo)
+            }
+
             holder.ivProduct.visibility = View.VISIBLE
             holder.ivProduct.alpha = if (isSelected) 0.5f else 1f
             holder.tvName.visibility = View.GONE
-            holder.tvTitle.text = item.price.toReal()
+            holder.tvTitle.text = String.format("%s \n%s", item.price.toReal(), item.name)
         }
 
         holder.itemView.setOnClickListener {
@@ -114,7 +131,7 @@ class ProductAdapter(
             filteredList.addAll(originalList)
         } else {
             val lower = query.lowercase()
-            filteredList.addAll(originalList.filter { it.name.lowercase().contains(lower) })
+            filteredList.addAll(originalList.filter { it.name.lowercase().contains(lower) && it.habilitado})
         }
         notifyDataSetChanged()
         notifyTotalChanged()

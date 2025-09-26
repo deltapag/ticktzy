@@ -9,7 +9,8 @@ import br.com.sttsoft.ticktzy.databinding.DialogChangeBinding
 class ChangeDialog (
     private val context: Context,
     private val chargeValue: Double,
-    private val onConfirm: (value: Double, valueChange: Double, dialog: ChangeDialog) -> Unit
+    private val onConfirm: (value: Double, valueChange: Double, dialog: ChangeDialog) -> Unit,
+    private val onCancel: (dialog: ChangeDialog) -> Unit
 ){
 
     private var input = ""
@@ -55,6 +56,10 @@ class ChangeDialog (
                 val value = getValue()
                 val change = value - chargeValue
                 onConfirm(value, change, this)
+            }
+
+            binding.llCancel.setOnClickListener {
+                onCancel(this)
             }
 
             dialog.window?.setLayout(

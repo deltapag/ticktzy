@@ -2,20 +2,21 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="110dp"
-    android:layout_height="110dp">
+    android:layout_width="match_parent"
+    android:layout_height="150dp">
 
     <TextView
         android:id="@+id/tv_badge"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="@drawable/bg_badge_red"
         android:elevation="4dp"
         android:gravity="center"
         android:text="10"
         android:visibility="gone"
+        tools:visibility="visible"
         android:textColor="@android:color/white"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,12 +38,12 @@
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
-            android:layout_height="35dp"
+            android:layout_height="50dp"
             android:background="@drawable/component_header_product_item"
             android:gravity="center"
-            android:text="TESTE 5"
+            android:text="TESTE 5 \n PRODUTO X"
             android:textColor="@android:color/white"
-            android:textSize="14sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,14 +54,16 @@
         <!-- Botão "-" -->
         <ImageView
             android:id="@+id/iv_product"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
             android:alpha="1"
             android:background="@drawable/component_product_item"
             android:clipToOutline="true"
             android:scaleType="centerInside"
             android:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,8 +72,8 @@
 
         <ImageView
             android:id="@+id/btn_minus"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_margin="8dp"
             android:contentDescription="Menos"
             android:scaleType="fitCenter"
@@ -82,13 +85,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             app:layout_constraintWidth_percent="0.5"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <!-- Botão "+" -->
         <ImageView
             android:id="@+id/btn_plus"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_margin="8dp"
             android:contentDescription="Mais"
             android:src="@drawable/plus"
@@ -105,6 +108,7 @@
             android:layout_height="wrap_content"
             android:text="TESTE 5"
             android:textStyle="bold"
+            android:textSize="20sp"
             android:textColor="@color/black"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"

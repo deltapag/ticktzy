@@ -18,10 +18,12 @@ import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.extensions.getPref
 import br.com.sttsoft.ticktzy.extensions.savePref
+import br.com.sttsoft.ticktzy.extensions.toRealFormatado
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.presentation.dialogs.ChangeDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.PaymentTypeChooseDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
+import br.com.sttsoft.ticktzy.presentation.home.HomeActivity
 import br.com.sttsoft.ticktzy.presentation.sale.components.ProductAdapter
 import br.com.sttsoft.ticktzy.repository.local.product
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
@@ -110,13 +112,20 @@ class SaleActivity: BaseActivity() {
             setAdapter()
             hideLoading()
         } else {
-            showToast("Sem Produtos cadastrados!", true)
-            finish()
+
+            ConfirmDialog ({ option ->
+                when (option) {
+                    "ok" -> {
+                        finish()
+                    }
+                }
+            },getString(R.string.dialog_warning_title), getString(R.string.text_dialog_message_no_products)).show(supportFragmentManager, "ConfirmDialog")
+
         }
     }
 
     private fun setAdapter() {
-        binding.rclProducts.layoutManager = GridLayoutManager(this, 3)
+        binding.rclProducts.layoutManager = GridLayoutManager(this, 2)
 
         adapter = ProductAdapter(productList) { total ->
             binding.paymentBar.setTotalText(getString(R.string.text_sale_price).format(total))
@@ -133,45 +142,6 @@ class SaleActivity: BaseActivity() {
 
         binding.btnBack.setOnClickListener {
             finish()
-        }
-
-        binding.paymentBar.setOnCashClick {
-            if (verifyTotal()) {
-                ChangeDialog(this, adapter.getTotal()) { valorRecebido, troco, dialog ->
-
-                    if (valorRecebido > 0.0 && valorRecebido >= adapter.getTotal()) {
-
-                        this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
-                        this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
-
-                        var valor = (valorRecebido - troco)
-
-                        this.savePref("MONEY_VALUE", this.getPref("MONEY_VALUE", 0.0) + valor)
-
-                        var caixa = this.getPref("CAIXA", 0L)
-
-                        caixa += ((valorRecebido - troco) * 100).toLong()
-
-                        this.savePref("CAIXA", caixa)
-
-                        type = "money"
-
-                        infos?.let { info ->
-                            PrinterUseCase(sunmiPrinterService).moneyReceiptPrint(info, valorRecebido, troco, adapter.getTotal())
-                        }
-
-                        printTickets()
-
-                        dialog.dismiss()
-
-                        finish()
-
-                    } else {
-                        showToast("Valor insuficiente!")
-                    }
-
-                }.show()
-            }
         }
 
         binding.paymentBar.setOnPixClick {
@@ -197,8 +167,46 @@ class SaleActivity: BaseActivity() {
                             type = "credit"
                             generatePaymentIntent("3")
                         }
+                        "money" -> {
+                            if (verifyTotal()) {
+                                ChangeDialog(this, adapter.getTotal(), { valorRecebido, troco, dialog ->
+
+                                    if (valorRecebido > 0.0 && valorRecebido >= adapter.getTotal()) {
+
+                                        this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
+                                        this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
+
+                                        var valor = (valorRecebido - troco)
+
+                                        this.savePref("MONEY_VALUE", this.getPref("MONEY_VALUE", 0.0) + valor)
+
+                                        var caixa = this.getPref("CAIXA", 0L)
+
+                                        caixa += ((valorRecebido - troco) * 100).toLong()
+
+                                        this.savePref("CAIXA", caixa)
+
+                                        type = "money"
+
+                                        infos?.let { info ->
+                                            PrinterUseCase(sunmiPrinterService).moneyReceiptPrint(info, valorRecebido, troco, adapter.getTotal())
+                                        }
+
+                                        printTickets()
+
+                                        dialog.dismiss()
+
+                                        finish()
+
+                                    } else {
+                                        showToast("Valor insuficiente!")
+                                    }
+
+                                }, {dialog -> dialog.dismiss() }).show()
+                            }
+                        }
                     }
-                }, false)
+                }, true)
                 dialog.show(supportFragmentManager, "CardTypeDialog")
             }
         }

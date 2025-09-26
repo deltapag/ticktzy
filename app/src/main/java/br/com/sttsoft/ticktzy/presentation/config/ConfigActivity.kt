@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import br.com.sttsoft.ticktzy.BuildConfig
+import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivityConfigBinding
 import br.com.sttsoft.ticktzy.domain.GetProductsUseCase
 import br.com.sttsoft.ticktzy.domain.PrinterUseCase
@@ -18,6 +19,9 @@ import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.extensions.getPref
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
+import br.com.sttsoft.ticktzy.presentation.cashier.home.ActivityCashierHome
+import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
+import br.com.sttsoft.ticktzy.presentation.dialogs.InputDialog
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 import com.sunmi.peripheral.printer.InnerPrinterCallback
 import com.sunmi.peripheral.printer.InnerPrinterManager
@@ -73,6 +77,7 @@ class ConfigActivity: BaseActivity() {
         }
 
         binding.btnSitefConfig.setOnClickListener {
+
             val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
 
             infos?.let {
@@ -130,7 +135,25 @@ class ConfigActivity: BaseActivity() {
         }
 
         binding.btnSitefConfigInfos.setOnClickListener {
-            startActivity(Intent(this@ConfigActivity, ConfigSitefInfosActivity::class.java))
+
+            val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
+
+            InputDialog { password, dialog ->
+                infos?.let {
+                    if (it.App.senhaDoApp.equals(password)) {
+                        dialog.dismiss()
+                        startActivity(Intent(this@ConfigActivity, ConfigSitefInfosActivity::class.java))
+                    } else {
+                        ConfirmDialog ({ option ->
+                            when (option) {
+                                "ok" -> {
+                                    dialog.dismiss()
+                                }
+                            }
+                        },getString(R.string.dialog_warning_title), getString(R.string.text_dialog_message_password_incorrect), true).show(supportFragmentManager, "ConfirmDialog")
+                    }
+                }
+            }.show(supportFragmentManager, "InputDialog")
         }
 
         binding.btnCashierTest.setOnClickListener {

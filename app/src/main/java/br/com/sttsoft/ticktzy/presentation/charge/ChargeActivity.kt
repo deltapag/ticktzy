@@ -158,8 +158,7 @@ class ChargeActivity: BaseActivity() {
                         "money" -> {
                             type = "money"
 
-                            ChangeDialog(this, (currentValue.toDouble() / 100)) { valorRecebido, troco, dialog ->
-
+                            ChangeDialog(this, (currentValue.toDouble() / 100), {valorRecebido, troco, dialog ->
                                 if (valorRecebido > 0.0 && valorRecebido >= (currentValue.toDouble() / 100)) {
                                     this.savePref("CHARGE_MADE", this.getPref("CHARGE_MADE", 0) + 1)
                                     this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
@@ -185,8 +184,10 @@ class ChargeActivity: BaseActivity() {
                                 } else {
                                     showToast("Valor insuficiente!")
                                 }
-
-                            }.show()
+                            },
+                            { dialog ->
+                                dialog.dismiss()
+                            }).show()
                         }
                     }
                 }, true)

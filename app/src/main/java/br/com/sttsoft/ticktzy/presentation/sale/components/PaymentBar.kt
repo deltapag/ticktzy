@@ -15,26 +15,20 @@ class PaymentBar @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val tvTotal: TextView
-    private val btnCash: Button
-    private val btnCard: Button
-    private val btnPix: Button
+    private val btnCard: LinearLayout
+    private val btnPix: LinearLayout
 
     init {
         orientation = HORIZONTAL
         LayoutInflater.from(context).inflate(R.layout.component_payment_bar, this, true)
 
         tvTotal = findViewById(R.id.tv_total)
-        btnCash = findViewById(R.id.btn_cash)
-        btnCard = findViewById(R.id.btn_card)
-        btnPix = findViewById(R.id.btn_pix)
+        btnCard = findViewById(R.id.ll_pay)
+        btnPix = findViewById(R.id.iv_pix)
     }
 
     fun setTotalText(value: String) {
         tvTotal.text = "Total: $value"
-    }
-
-    fun setOnCashClick(listener: () -> Unit) {
-        btnCash.setOnClickListener { listener() }
     }
 
     fun setOnCardClick(listener: () -> Unit) {
