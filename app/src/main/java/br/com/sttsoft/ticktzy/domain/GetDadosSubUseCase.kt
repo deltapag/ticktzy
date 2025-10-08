@@ -9,7 +9,6 @@ class GetDadosSubUseCase {
         val s = infos.Pagamento.Subadquirencia[0]
 
         return buildString {
-            append("[DadosSubAdquirencia=")
             append("00").append(count(useValidInformation(s.nomeFantasia))).append(useValidInformation(s.nomeFantasia))
             append("01").append(count(useValidInformation(s.endereco))).append(useValidInformation(s.endereco))
             append("02").append(count(useValidInformation(s.cidade))).append(useValidInformation(s.cidade))
@@ -23,7 +22,6 @@ class GetDadosSubUseCase {
             append("10").append(count(useValidInformation(s.email))).append(useValidInformation(s.email))
             append("11").append(count(useValidInformation(s.razaoSocial))).append(useValidInformation(s.razaoSocial))
             append("12").append(count(useValidInformation(s.tipoPessoa))).append(useValidInformation(s.tipoPessoa))
-            append("];")
         }
     }
 

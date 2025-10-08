@@ -34,7 +34,7 @@ class SalesActivity: BaseActivity() {
     private val vm: SaleViewModel by defaultVmFactory {
         SaleViewModel(
             productCache = ProductCacheUseCase(this),
-            sitef = SitefUseCase(),
+            sitef = SitefUseCase(this),
             prefs = PrefsGatewayImpl(this)
         )
     }

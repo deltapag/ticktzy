@@ -13,8 +13,8 @@ android {
         applicationId = "br.com.sttsoft.ticktzy"
         minSdk = 24
         targetSdk = 34
-        versionCode = 8
-        versionName = "1.0.6"
+        versionCode = 12 // Sempre somar +1
+        versionName = "1.0.10"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

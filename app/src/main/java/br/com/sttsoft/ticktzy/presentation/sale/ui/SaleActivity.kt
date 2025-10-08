@@ -213,7 +213,7 @@ class SaleActivity: BaseActivity() {
     }
 
     private fun generatePaymentIntent(modalidade: String, isPix: Boolean = false) {
-        infos?.let { SitefUseCase().payment(it, adapter.getTotal(), modalidade, isPix, this.getPref("TLS_ENABLED", false)) }
+        infos?.let { SitefUseCase(this).payment(it, adapter.getTotal(), modalidade, isPix, this.getPref("TLS_ENABLED", false)) }
             ?.let { activityResultLauncher.launch(it) }
     }
 

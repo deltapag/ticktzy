@@ -71,7 +71,7 @@ class ConfigActivity: BaseActivity() {
             val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
 
             infos?.let {
-                var i = SitefUseCase().testConnection(it)
+                var i = SitefUseCase(this).testConnection(it)
                 activityResultLauncher.launch(i)
             }
         }
@@ -81,7 +81,7 @@ class ConfigActivity: BaseActivity() {
             val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
 
             infos?.let {
-                var i = SitefUseCase().tokenConfig(it)
+                var i = SitefUseCase(this).tokenConfig(it)
                 activityResultLauncher.launch(i)
             }
         }
@@ -90,7 +90,7 @@ class ConfigActivity: BaseActivity() {
             val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
 
             infos?.let {
-                var i = SitefUseCase().directAccess(it, this.getPref("TLS_ENABLED", false))
+                var i = SitefUseCase(this).directAccess(it, this.getPref("TLS_ENABLED", false))
                 activityResultLauncher.launch(i)
             }
         }

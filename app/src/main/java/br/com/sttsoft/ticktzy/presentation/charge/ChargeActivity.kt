@@ -224,7 +224,7 @@ class ChargeActivity: BaseActivity() {
     private fun generatePaymentIntent(modalidade: String, isPix: Boolean = false) {
 
         val value = currentValue / 100.0
-        infos?.let { SitefUseCase().payment(it, value, modalidade, isPix, this.getPref("TLS_ENABLED", false)) }
+        infos?.let { SitefUseCase(this).payment(it, value, modalidade, isPix, this.getPref("TLS_ENABLED", false)) }
             ?.let { activityResultLauncher.launch(it) }
     }
 

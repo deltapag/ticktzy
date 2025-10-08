@@ -1,8 +1,10 @@
 package br.com.sttsoft.ticktzy.domain
 
+import android.content.Context
 import android.content.Intent
 import androidx.collection.intSetOf
 import br.com.sttsoft.ticktzy.extensions.getPref
+import br.com.sttsoft.ticktzy.extensions.isUsingCellular
 import br.com.sttsoft.ticktzy.extensions.removeSpecialChars
 import br.com.sttsoft.ticktzy.extensions.toSitefFormat
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
@@ -10,7 +12,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class SitefUseCase {
+class SitefUseCase(var context: Context) {
 
     private fun getDefaultIntentParameters(infos: InfoResponse, isTLSEnabled: Boolean = false) : Intent {
         var i = Intent("br.com.softwareexpress.sitef.msitef.ACTIVITY_CLISITEF")
@@ -19,11 +21,13 @@ class SitefUseCase {
         i.putExtra("timeoutColeta", "30")
 
         infos?.apply {
-            if (isTLSEnabled) {
+
+            i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
+            /*if (isTLSEnabled) {
                 i.putExtra("enderecoSitef", "tls-prod.fiservapp.com:443")
             } else {
                 i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
-            }
+            }*/
 
             i.putExtra("empresaSitef", infos.Pagamento.lojasSitef.first().codigoLojaSitef)
             i.putExtra("cnpj_automacao", infos.Pagamento.lojasSitef.first().cnpj.removeSpecialChars())
@@ -31,11 +35,18 @@ class SitefUseCase {
             i.putExtra("dadosSubAdqui", GetDadosSubUseCase().getDadosSub(infos))
         }
 
-        if (isTLSEnabled) {
-            i.putExtra("comExterna", "4")
+        if (context.isUsingCellular()) {
+            i.putExtra("comExterna", "1")
         } else {
             i.putExtra("comExterna", "0")
         }
+
+        /*
+        if (isTLSEnabled) {
+            i.putExtra("comExterna", "1")
+        } else {
+            i.putExtra("comExterna", "0")
+        }*/
 
         return i
     }

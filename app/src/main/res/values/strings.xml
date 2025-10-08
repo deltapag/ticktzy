@@ -113,7 +113,20 @@
     <string name="button_text_sitef_cancel">Estorno</string>
     <string name="button_text_sitef_send_logs">Envio de Logs SITEF</string>
 
-
+    <!-- Fiserv Package Name Application -->
+    <string name="ingenico_dx8000">br.com.bin</string>
+    <string name="ingenico_dx4000">br.com.bin.dx4000</string>
+    <string name="ingenico_ex4000">br.com.bin.ex4000</string>
+    <string name="ingenico_ex6000">br.com.bin.ex6000</string>
+    <string name="gertec_gpos780">br.com.bin.gpos780</string>
+    <string name="gertec_gpos760">br.com.bin.gpos760</string>
+    <string name="gertec_gpos720">br.com.bin.gpos720</string>
+    <string name="sunmi_P2">br.com.bin.P2</string>
+    <string name="sunmi_P2A11">br.com.bin.P2A11</string>
+    <string name="positivo_L400">br.com.bin.l400</string>
+    <string name="tectoy_T4">br.com.bin.T8</string>
+    <string name="tectoy_T8">br.com.bin.T8</string>
+    <string name="tectoy_T19">br.com.bin.T19</string>
 </resources>
 
 

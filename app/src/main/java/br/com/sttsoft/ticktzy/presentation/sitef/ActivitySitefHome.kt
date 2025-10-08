@@ -55,20 +55,20 @@ class ActivitySitefHome: BaseActivity() {
         }
         binding.btnReprint.setOnClickListener {
             type = "reprint"
-            infos?.let { SitefUseCase().reprint(it, this.getPref("TLS_ENABLED", false)) }
+            infos?.let { SitefUseCase(this).reprint(it, this.getPref("TLS_ENABLED", false)) }
                 ?.let { it1 -> activityResultLauncher.launch(it1) }
         }
 
         binding.btnCancel.setOnClickListener {
             type = "cancel"
 
-            infos?.let { SitefUseCase().cancelation(it, this.getPref("TLS_ENABLED", false)) }
+            infos?.let { SitefUseCase(this).cancelation(it, this.getPref("TLS_ENABLED", false)) }
                 ?.let { it1 -> activityResultLauncher.launch(it1) }
         }
 
         binding.btnSendLogs.setOnClickListener {
             type = "logs"
-            infos?.let { SitefUseCase().trace(it, this.getPref("TLS_ENABLED", false)) }
+            infos?.let { SitefUseCase(this).trace(it, this.getPref("TLS_ENABLED", false)) }
                 ?.let { it1 -> activityResultLauncher.launch(it1) }
         }
 
@@ -81,7 +81,7 @@ class ActivitySitefHome: BaseActivity() {
             val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
 
             infos?.let {
-                var i = SitefUseCase().directAccess(it, this.getPref("TLS_ENABLED", false))
+                var i = SitefUseCase(this).directAccess(it, this.getPref("TLS_ENABLED", false))
                 activityResultLauncher.launch(i)
             }
         }
