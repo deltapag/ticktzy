@@ -24,6 +24,7 @@ class MSCall {
 
         private val client = OkHttpClient()
             .newBuilder()
+            .addInterceptor(AuthorizationInterceptor())
             .addInterceptor(logging)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)

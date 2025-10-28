@@ -23,6 +23,7 @@ class MSCallProducts {
 
         private val client = OkHttpClient()
             .newBuilder()
+            .addInterceptor(ParseApiInterceptor())
             .addInterceptor(logging)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)

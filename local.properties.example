@@ -1,0 +1,45 @@
+## Example local.properties
+# Copy this file to `local.properties` and fill in values for your machine.
+# Do NOT commit your `local.properties` – it contains machine-specific and secret data.
+
+# -----------------------------
+# Android SDK and Java (local)
+# -----------------------------
+# Path to your Android SDK installation
+# sdk.dir=/absolute/path/to/Android/sdk
+
+# Path to your local Java 21 installation (JDK home)
+# org.gradle.java.home=/absolute/path/to/jdk-21
+
+# -----------------------------
+# Keystore (Signing) – local
+# -----------------------------
+# Relative example: keep keys outside the repo in a sibling folder `.keys`
+keystore.file=../.keys/ticketzy_keystore.jks
+keystore.storePassword=change-me
+keystore.keyAlias=ticketzy
+keystore.keyPassword=change-me
+
+# -----------------------------
+# Environment flags and endpoints
+# -----------------------------
+# Whether to use remote APIs (true/false)
+useAPI=true
+# Delta Pag base URL (POS backend)
+urlDelta=https://pos.deltapag.com.br/
+# Back4App (Parse) base URL
+urlAPI=https://parseapi.back4app.com/
+
+# -----------------------------
+# API tokens/keys (secrets)
+# -----------------------------
+# Bearer token for Delta Pag API
+api.bearerToken=replace-with-your-token
+# Back4App (Parse) credentials
+api.parseAppId=replace-with-your-app-id
+api.parseApiKey=replace-with-your-rest-api-key
+
+# Notes:
+# - Keep `local.properties` out of version control.
+# - Values here are read by Gradle (build.gradle.kts) and injected via BuildConfig
+#   and OkHttp interceptors, so code no longer hardcodes secrets or machine paths.
