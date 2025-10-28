@@ -35,11 +35,11 @@ class SitefUseCase(var context: Context) {
             i.putExtra("dadosSubAdqui", GetDadosSubUseCase().getDadosSub(infos))
         }
 
-        if (VerifyTlsComunicationUseCase(context).comunicacaoPermiteTls()) {
-            i.putExtra("comExterna", "1")
-        } else {
-            i.putExtra("comExterna", "0")
-        }
+        // if (VerifyTlsComunicationUseCase(context).comunicacaoPermiteTls()) {
+        //     i.putExtra("comExterna", "1")
+        // } else {
+        //     i.putExtra("comExterna", "0")
+        // }
 
         /*
         if (isTLSEnabled) {
