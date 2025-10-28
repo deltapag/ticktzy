@@ -15,8 +15,9 @@ Documento completo de todos os serviços externos, servidores, APIs e biblioteca
 **Uso no projeto**: Armazenamento e recuperação de produtos
 
 **Configuração**:
-- **Application ID**: `44Ipo5EE0DDLvducULikdSG6tVbnlyNhTWcQlabp`
-- **REST API Key**: `9U3oQCXujFZPGZQzIV8d36WiAL4VcRGxlfdx8wPp`
+- Headers adicionados via interceptor OkHttp (`ParseApiInterceptor`)
+- Valores lidos de `local.properties` (ex.: `api.parseAppId`, `api.parseApiKey`)
+- Exemplo: ver `local.properties.example`
 
 **Endpoints utilizados**:
 - `GET /classes/products` - Busca produtos por CNPJ
@@ -48,15 +49,18 @@ Documento completo de todos os serviços externos, servidores, APIs e biblioteca
 **Uso no projeto**: Busca informações do terminal, configurações SiTef e dados de pagamento
 
 **Configuração**:
-- **Authorization**: Bearer Token `9712f0e92fb7a94b55bc3c23875e8951218635fee146b3932393e782991e5b46`
+- Authorization Bearer adicionado via interceptor OkHttp (`AuthorizationInterceptor`)
+- Token lido de `local.properties` (chave `api.bearerToken`)
+- Exemplo: ver `local.properties.example`
 
 **Endpoints utilizados**:
 - `POST /pos/init` - Inicialização do terminal (busca infos)
 
 **Localização no código**:
-- `app/src/main/java/br/com/sttsoft/ticktzy/repository/remote/MSCall.kt`
-- `app/src/main/java/br/com/sttsoft/ticktzy/repository/remote/repositorys/InfoRepository.kt`
-- `app/src/main/java/br/com/sttsoft/ticktzy/domain/GetInfosUseCase.kt`
+- Cliente: `app/src/main/java/br/com/sttsoft/ticktzy/repository/remote/MSCall.kt`
+- Interceptores: `app/src/main/java/br/com/sttsoft/ticktzy/repository/remote/AuthorizationInterceptor.kt`
+- Interface: `app/src/main/java/br/com/sttsoft/ticktzy/repository/remote/repositorys/InfoRepository.kt`
+- Caso de uso: `app/src/main/java/br/com/sttsoft/ticktzy/domain/GetInfosUseCase.kt`
 
 **Timeout configurado**:
 - Connect: 15 segundos
@@ -184,32 +188,6 @@ fun directAccess(infos: InfoResponse, isTLSEnabled: Boolean): Intent
 
 ---
 
-### 5. **POSMP (Printer Service)**
-
-**Biblioteca**: `posmpapi_1.01.10-partnersRelease.aar`
-
-**Descrição**: Biblioteca proprietária para impressão em equipamentos POSMP.
-
-**Uso no projeto**: Impressão alternativa em terminais POSMP
-
-**Localização**:
-- Arquivo AAR: `app/libs/posmpapi_1.01.10-partnersRelease.aar`
-- Interface: `app/src/main/java/br/com/sttsoft/ticktzy/core/device/PosmpReceiptController.kt`
-- Implementação: `app/src/main/java/br/com/sttsoft/ticktzy/core/device/PosmpReceiptControllerImpl.kt`
-
-**Integração com SmartPosHelper**:
-```kotlin
-SmartPosHelper.getInstance().printer
-```
-- Localização: `app/src/main/java/br/com/sttsoft/ticktzy/presentation/sale/ui/SaleActivity.kt:236`
-
-**Funcionalidades**:
-- Impressão de comprovantes SiTef
-- Controle de status de impressão
-- Callbacks assíncronos
-
----
-
 ## 📚 Bibliotecas e Dependências
 
 ### 6. **Android Jetpack Libraries**
@@ -272,30 +250,27 @@ SmartPosHelper.getInstance().printer
 
 ---
 
-### 8. **UI e Animações**
-
-#### 8.1. **Lottie**
-- **Versão**: `6.6.7`
-- **Grupo**: `com.airbnb.android:lottie`
-- **Uso**: Animações JSON
-- **Localização**: `app/src/main/assets/loading.json`
-
-#### 8.2. **Coil**
-- **Versão**: `2.7.0`
-- **Módulo**: `io.coil-kt:coil`
-- **Uso**: Carregamento de imagens
-
----
-
 ## 🔐 Autenticação e Segurança
 
 ### 9. **Tokens e API Keys**
 
-| Serviço | Chave/Token | Localização |
-|---------|-------------|-------------|
-| Back4App | `X-Parse-Application-Id: 44Ipo5EE0DDLvducULikdSG6tVbnlyNhTWcQlabp` | `ProductsRepository.kt` |
-| Back4App | `X-Parse-REST-API-Key: 9U3oQCXujFZPGZQzIV8d36WiAL4VcRGxlfdx8wPp` | `ProductsRepository.kt` |
-| Delta Pag | `Authorization: Bearer 9712f0e92fb7a94b55bc3c23875e8951218635fee146b3932393e782991e5b46` | `InfoRepository.kt` |
+Agora externalizados via `local.properties` e injetados por interceptors:
+
+| Serviço | Como é injetado | Chaves em local.properties |
+|---------|------------------|----------------------------|
+| Back4App | `ParseApiInterceptor` | `api.parseAppId`, `api.parseApiKey` |
+| Delta Pag | `AuthorizationInterceptor` | `api.bearerToken` |
+
+---
+
+## 🔧 Configuração por Ambiente
+
+- Arquivo de exemplo: `local.properties.example`
+- Arquivo real (não versionado): `local.properties`
+- Chaves relevantes:
+  - `useAPI`, `urlDelta`, `urlAPI`
+  - `api.bearerToken`, `api.parseAppId`, `api.parseApiKey`
+  - `keystore.file`, `keystore.storePassword`, `keystore.keyAlias`, `keystore.keyPassword`
 
 ---
 

@@ -1,85 +1,85 @@
-# Code Style Setup - Quick Summary
+# Configuração de Estilo de Código - Resumo Rápido
 
-I've added ESLint/Prettier-like tools to your Kotlin project:
+Adicionei ferramentas semelhantes a ESLint/Prettier ao seu projeto Kotlin:
 
-## ✅ What's Been Added
+## ✅ O que foi adicionado
 
-### 1. **ktlint** - Kotlin linter/formatter (like ESLint + Prettier)
-- **Check**: `./gradlew ktlintCheck`
-- **Format**: `./gradlew ktlintFormat`
+### 1. **ktlint** - Linter/formatador para Kotlin (como ESLint + Prettier)
+- **Verificar**: `./gradlew ktlintCheck`
+- **Formatar**: `./gradlew ktlintFormat`
 
-### 2. **Detekt** - Static code analysis (like SonarQube)
-- **Check**: `./gradlew detekt`
+### 2. **Detekt** - Análise estática de código (como SonarQube)
+- **Verificar**: `./gradlew detekt`
 
-### 3. **EditorConfig** - Editor configuration
-- Automatic formatting settings for all editors
+### 3. **EditorConfig** - Configuração do editor
+- Configurações de formatação automática para todos os editores
 
-## 📝 Commands
+## 📝 Comandos
 
 ```bash
-# Lint code (like "npm run lint")
+# Verificar lint (como "npm run lint")
 ./gradlew ktlintCheck
 ./scripts/lint.sh
 
-# Format code (like "npm run format")
+# Formatar código (como "npm run format")
 ./gradlew ktlintFormat
 ./scripts/format.sh
 
-# Check all (like "npm run check")
+# Verificar tudo (como "npm run check")
 ./scripts/check.sh
 
-# Auto-fix
+# Correção automática
 ./scripts/fix.sh
 ```
 
-## ⚠️ Current Issues
+## ⚠️ Problemas Atuais
 
-There are some code style violations in the existing code. The main ones are:
+Existem algumas violações de estilo no código atual. As principais são:
 
-1. **Wildcard imports** in test files
-2. **File naming** (should be PascalCase, e.g., `defaultVmFactory.kt` → `DefaultVmFactory.kt`)
-3. **Line length** exceeding 120 characters in a few places
-4. **Class naming** using snake_case instead of PascalCase
+1. **Importações curinga** em arquivos de teste
+2. **Nomenclatura de arquivos** (deve ser PascalCase, ex.: `defaultVmFactory.kt` → `DefaultVmFactory.kt`)
+3. **Comprimento de linha** excedendo 120 caracteres em alguns pontos
+4. **Nomenclatura de classes** usando snake_case em vez de PascalCase
 
-To fix automatically:
+Para corrigir automaticamente:
 ```bash
 ./gradlew ktlintFormat
 ```
 
-To check without fixing:
+Para verificar sem corrigir:
 ```bash
 ./gradlew ktlintCheck
 ```
 
-## 📚 Documentation
+## 📚 Documentação
 
-- See `CODESTYLE.md` for complete guide
-- Configuration files:
-  - `.editorconfig` - Editor settings
-  - `detekt.yml` - Static analysis rules
-  - `app/build.gradle.kts` - ktlint configuration
+- Consulte `CODESTYLE.md` para o guia completo
+- Arquivos de configuração:
+  - `.editorconfig` - Configurações do editor
+  - `detekt.yml` - Regras de análise estática
+  - `app/build.gradle.kts` - Configuração do ktlint
 
-## 🎯 Quick Start
+## 🎯 Início Rápido
 
-1. **Install dependencies** (already done):
+1. **Instalar dependências** (já feito):
    ```bash
    ./gradlew build
    ```
 
-2. **Format existing code**:
+2. **Formatar o código existente**:
    ```bash
    ./gradlew ktlintFormat
    ```
 
-3. **Check code quality**:
+3. **Verificar a qualidade do código**:
    ```bash
    ./gradlew ktlintCheck
    ./gradlew detekt
    ```
 
-## 📊 Reports
+## 📊 Relatórios
 
-After running checks, find reports at:
+Após executar as verificações, os relatórios ficam em:
 - ktlint: `build/reports/ktlint/`
 - Detekt: `build/reports/detekt.html`
 

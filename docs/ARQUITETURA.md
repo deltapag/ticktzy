@@ -207,7 +207,10 @@ Event → ViewModel → UseCase → Repository → Result → State Update → U
 ### 1. **Backend APIs**
 - **URL Delta**: `https://pos.deltapag.com.br/`
 - **URL Parse (Back4App)**: `https://parseapi.back4app.com/`
-- **Authentication**: X-Parse-Application-Id e X-Parse-REST-API-Key
+- **Authentication**: Injetada via OkHttp Interceptors
+  - `AuthorizationInterceptor` (Bearer Token para Delta)
+  - `ParseApiInterceptor` (Headers do Parse)
+  - Valores lidos de `local.properties` (ver `local.properties.example`)
 
 ### 2. **SiTef (Pagamentos)**
 Integração com SiTef para:
@@ -295,14 +298,14 @@ Presentation → Domain ← Repository
 
 ### **Debug**
 - API habilitada
-- URLs de produção configuradas
-- TLS desabilitado
+- URLs lidas de `local.properties` com defaults
+- Headers injetados via interceptors
 
 ### **Release**
 - API habilitada
 - Minify desabilitado
 - ProGuard configurado
-- Signing configurado (comentado)
+- Signing configurado via `local.properties` (keystore.*)
 
 ---
 

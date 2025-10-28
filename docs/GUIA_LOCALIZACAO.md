@@ -364,8 +364,10 @@ ActivityCashierStart → Verifica se caixa já está aberto → Pede valor inici
 
 | Arquivo | O que faz |
 |---------|-----------|
-| `MSCall.kt` | Client Retrofit base |
-| `MSCallProducts.kt` | Client para produtos (Back4App) |
+| `MSCall.kt` | Client Retrofit base (usa `AuthorizationInterceptor`) |
+| `MSCallProducts.kt` | Client para produtos (usa `ParseApiInterceptor`) |
+| `AuthorizationInterceptor.kt` | Adiciona header Bearer (Delta) a cada request |
+| `AuthorizationInterceptor.kt` (ParseApiInterceptor) | Adiciona headers do Parse |
 
 #### **Modelos de Requisição** (`request/`)
 
