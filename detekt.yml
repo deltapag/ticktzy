@@ -1,0 +1,103 @@
+# Detekt Configuration
+# This file configures detekt, a static code analysis tool for Kotlin
+
+build:
+  maxIssues: 10
+  weights:
+    complexity: 2
+    LongParameterList: 1
+    style: 1
+    comments: 1
+
+processors:
+  active: true
+  exclude: ''
+
+console-reports:
+  active: true
+  exclude:
+    - 'ProjectStatisticsReport'
+    - 'ComplexityReport'
+
+output-reports:
+  MarkdownOutputReport:
+    enabled: false
+  HtmlOutputReport:
+    enabled: true
+    output: build/reports/detekt.html
+
+comments:
+  CommentOverPrivateFunction:
+    enabled: true
+  CommentOverPrivateProperty:
+    enabled: true
+  UndocumentedPublicClass:
+    enabled: false
+  UndocumentedPublicFunction:
+    enabled: false
+
+complexity:
+  ComplexCondition:
+    threshold: 4
+  ComplexMethod:
+    threshold: 10
+  CyclomaticComplexMethod:
+    threshold: 15
+  LongMethod:
+    threshold: 75
+  LongParameterList:
+    threshold: 6
+
+style:
+  ForbiddenComment:
+    values: 'TODO:,FIXME:,STOPSHIP:'
+  ForbiddenImport:
+    alias: []
+    imports: []
+  MagicNumber:
+    ignoreNumbers: ['-1', '0', '1', '2']
+    ignoreHashCodeFunction: true
+    ignorePropertyDeclaration: true
+  MaxLineLength:
+    maxLineLength: 120
+    autoCorrect: true
+  NewLineAtEndOfFile:
+    enabled: true
+  OptionalUnit:
+    enabled: true
+  ReturnCount:
+    max: 5
+  StringTemplate:
+    enabled: true
+  TrailingWhitespace:
+    enabled: true
+    autoCorrect: true
+  UnusedImports:
+    enabled: true
+
+naming:
+  FunctionMaxLength:
+    maximumFunctionNameLength: 60
+  FunctionMinLength:
+    minimumFunctionNameLength: 3
+  MaxLineLength:
+    autoCorrect: false
+  MatchingDeclarationName:
+    enabled: true
+  MemberNameEqualsClassName:
+    enabled: true
+
+performance:
+  ForEachOnRange:
+    enabled: true
+  SpreadOperator:
+    enabled: true
+  UnnecessaryTemporaryInstantiation:
+    enabled: true
+
+potentially-bug-prone:
+  UnreachableCode:
+    enabled: true
+  UnsafeCallOnNullableType:
+    enabled: true
+

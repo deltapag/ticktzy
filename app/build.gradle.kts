@@ -1,4 +1,17 @@
 import com.android.build.api.dsl.SigningConfig
+import java.util.Properties
+import java.io.FileInputStream
+
+// Load values from local.properties (machine-specific)
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        FileInputStream(localFile).use { load(it) }
+    }
+}
+
+fun localProp(key: String, defaultValue: String? = null): String? =
+    localProperties.getProperty(key, defaultValue)
 
 plugins {
     alias(libs.plugins.android.application)
@@ -20,10 +33,19 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("D:\\ticktzy\\ticketzy_keystore.jks") // caminho para seu .jks
-            storePassword = "ticketzy"
-            keyAlias = "ticketzy"
-            keyPassword = "ticketzy"
+            val keystorePath = localProp("keystore.file")
+            require(!keystorePath.isNullOrBlank()) { "Define keystore.file in local.properties" }
+            
+            // Convert Windows path separators to forward slashes for compatibility
+            val normalizedPath = keystorePath?.replace("\\", "/")
+            storeFile = file(normalizedPath ?: keystorePath)
+
+            storePassword = localProp("keystore.storePassword")
+                ?: error("Define keystore.storePassword in local.properties")
+            keyAlias = localProp("keystore.keyAlias")
+                ?: error("Define keystore.keyAlias in local.properties")
+            keyPassword = localProp("keystore.keyPassword")
+                ?: error("Define keystore.keyPassword in local.properties")
             enableV1Signing = true
             enableV2Signing = true
         }
@@ -36,16 +58,36 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("Boolean", "useAPI", "true")
-            buildConfigField("String", "urlDelta", "\"https://pos.deltapag.com.br/\"")
-            buildConfigField("String", "urlAPI", "\"https://parseapi.back4app.com/\"")
+            val useAPI = (localProp("useAPI", "true") ?: "true").lowercase()
+            val urlDelta = localProp("urlDelta", "https://pos.deltapag.com.br/")
+            val urlAPI = localProp("urlAPI", "https://parseapi.back4app.com/")
+            val bearerToken = localProp("api.bearerToken", "9712f0e92fb7a94b55bc3c23875e8951218635fee146b3932393e782991e5b46")
+            val parseAppId = localProp("api.parseAppId", "44Ipo5EE0DDLvducULikdSG6tVbnlyNhTWcQlabp")
+            val parseApiKey = localProp("api.parseApiKey", "9U3oQCXujFZPGZQzIV8d36WiAL4VcRGxlfdx8wPp")
+
+            buildConfigField("Boolean", "useAPI", useAPI)
+            buildConfigField("String", "urlDelta", "\"$urlDelta\"")
+            buildConfigField("String", "urlAPI", "\"$urlAPI\"")
+            buildConfigField("String", "bearerToken", "\"$bearerToken\"")
+            buildConfigField("String", "parseAppId", "\"$parseAppId\"")
+            buildConfigField("String", "parseApiKey", "\"$parseApiKey\"")
 
             signingConfig = signingConfigs.getByName("release")
         }
         debug {
-            buildConfigField("Boolean", "useAPI", "true")
-            buildConfigField("String", "urlDelta", "\"https://pos.deltapag.com.br/\"")
-            buildConfigField("String", "urlAPI", "\"https://parseapi.back4app.com/\"")
+            val useAPI = (localProp("useAPI", "true") ?: "true").lowercase()
+            val urlDelta = localProp("urlDelta", "https://pos.deltapag.com.br/")
+            val urlAPI = localProp("urlAPI", "https://parseapi.back4app.com/")
+            val bearerToken = localProp("api.bearerToken", "9712f0e92fb7a94b55bc3c23875e8951218635fee146b3932393e782991e5b46")
+            val parseAppId = localProp("api.parseAppId", "44Ipo5EE0DDLvducULikdSG6tVbnlyNhTWcQlabp")
+            val parseApiKey = localProp("api.parseApiKey", "9U3oQCXujFZPGZQzIV8d36WiAL4VcRGxlfdx8wPp")
+
+            buildConfigField("Boolean", "useAPI", useAPI)
+            buildConfigField("String", "urlDelta", "\"$urlDelta\"")
+            buildConfigField("String", "urlAPI", "\"$urlAPI\"")
+            buildConfigField("String", "bearerToken", "\"$bearerToken\"")
+            buildConfigField("String", "parseAppId", "\"$parseAppId\"")
+            buildConfigField("String", "parseApiKey", "\"$parseApiKey\"")
         }
     }
 
