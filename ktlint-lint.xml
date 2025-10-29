@@ -9,6 +9,22 @@
             <key>no-multiple-empty-blocks</key>
             <severity>off</severity>
         </rule>
+        <rule>
+            <key>class-naming</key>
+            <severity>off</severity>
+        </rule>
+        <rule>
+            <key>property-naming</key>
+            <severity>off</severity>
+        </rule>
+        <rule>
+            <key>max-line-length</key>
+            <severity>off</severity>
+        </rule>
+        <rule>
+            <key>comment-spacing</key>
+            <severity>off</severity>
+        </rule>
     </rules>
 </configuration>
 
