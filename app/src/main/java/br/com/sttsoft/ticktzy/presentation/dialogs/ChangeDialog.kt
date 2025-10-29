@@ -6,13 +6,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import br.com.sttsoft.ticktzy.databinding.DialogChangeBinding
 
-class ChangeDialog (
+class ChangeDialog(
     private val context: Context,
     private val chargeValue: Double,
     private val onConfirm: (value: Double, valueChange: Double, dialog: ChangeDialog) -> Unit,
-    private val onCancel: (dialog: ChangeDialog) -> Unit
-){
-
+    private val onCancel: (dialog: ChangeDialog) -> Unit,
+) {
     private var input = ""
     private lateinit var dialog: Dialog
     private lateinit var binding: DialogChangeBinding
@@ -26,19 +25,20 @@ class ChangeDialog (
             binding.tvChange.text = format(chargeValue)
             updateVale()
 
-            val botoes = mapOf(
-                binding.tvN1 to "1",
-                binding.tvN2 to "2",
-                binding.tvN3 to "3",
-                binding.tvN4 to "4",
-                binding.tvN5 to "5",
-                binding.tvN6 to "6",
-                binding.tvN7 to "7",
-                binding.tvN8 to "8",
-                binding.tvN9 to "9",
-                binding.tvN0 to "0",
-                binding.tvN00 to "00"
-            )
+            val botoes =
+                mapOf(
+                    binding.tvN1 to "1",
+                    binding.tvN2 to "2",
+                    binding.tvN3 to "3",
+                    binding.tvN4 to "4",
+                    binding.tvN5 to "5",
+                    binding.tvN6 to "6",
+                    binding.tvN7 to "7",
+                    binding.tvN8 to "8",
+                    binding.tvN9 to "9",
+                    binding.tvN0 to "0",
+                    binding.tvN00 to "00",
+                )
 
             botoes.forEach { (view, digito) ->
                 view.setOnClickListener {
@@ -64,7 +64,7 @@ class ChangeDialog (
 
             dialog.window?.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
             )
 
             dialog.setCancelable(true)
@@ -95,5 +95,4 @@ class ChangeDialog (
             dialog.dismiss()
         }
     }
-
 }

@@ -4,5 +4,5 @@ data class Pagamento(
     val sitefPublico: Sitef,
     val sitefPrivado: Sitef,
     val lojasSitef: List<LojaSitef>,
-    val Subadquirencia: List<Subadquirencia>
+    val Subadquirencia: List<Subadquirencia>,
 )

@@ -7,5 +7,5 @@ data class product(
     val price: Double,
     var isSelected: Boolean = false,
     var quantity: Int = 0,
-    var habilitado: Boolean = false
+    var habilitado: Boolean = false,
 )

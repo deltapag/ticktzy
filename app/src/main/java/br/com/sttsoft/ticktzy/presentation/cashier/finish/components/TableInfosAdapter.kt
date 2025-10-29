@@ -3,14 +3,11 @@ package br.com.sttsoft.ticktzy.presentation.cashier.finish.components
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ComponentTableInfoRowBinding
 import br.com.sttsoft.ticktzy.databinding.ComponentTableInfoSectionBinding
 
-class TableInfosAdapter(private val rows: List<tableInfos>):  RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class TableInfosAdapter(private val rows: List<tableInfos>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         private const val TYPE_ROW = 0
         private const val TYPE_SECTION = 1
@@ -29,19 +26,28 @@ class TableInfosAdapter(private val rows: List<tableInfos>):  RecyclerView.Adapt
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_ROW -> {
-                val binding = ComponentTableInfoRowBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
-                )
+                val binding =
+                    ComponentTableInfoRowBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    )
                 TableRowViewHolder(binding)
             }
 
             TYPE_SECTION -> {
-                val binding = ComponentTableInfoSectionBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
-                )
+                val binding =
+                    ComponentTableInfoSectionBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    )
                 TableSectionViewHolder(binding)
             }
 
@@ -49,7 +55,10 @@ class TableInfosAdapter(private val rows: List<tableInfos>):  RecyclerView.Adapt
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
         when (val item = rows[position]) {
             is tableInfos.tableRow -> {
                 val binding = (holder as TableRowViewHolder).binding

@@ -6,5 +6,5 @@ data class AtualizacaoRemota(
     val Porta: String,
     val Recurso: String,
     val Param: String,
-    val Valor: String
+    val Valor: String,
 )

@@ -8,7 +8,6 @@ import java.util.Date
 import java.util.Locale
 
 class TerminalnfosUseCase {
-
     fun invoke(): Terminal {
         val sdfData = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val sdfHora = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
@@ -20,11 +19,11 @@ class TerminalnfosUseCase {
             Fabricante = Build.MANUFACTURER ?: "Desconhecido",
             Modelo = Build.MODEL ?: "Desconhecido",
             NumeroSerie = getSerialFromSystem(),
-            VrsApp = "v"+ BuildConfig.VERSION_NAME,
+            VrsApp = "v" + BuildConfig.VERSION_NAME,
             VrsCliSitef = "2.0.0",
             TipoConexao = "WIFI",
             MacAddress = "00:11:22:33:44:55",
-            OperadoraTelecom = "Claro"
+            OperadoraTelecom = "Claro",
         )
     }
 
@@ -37,5 +36,4 @@ class TerminalnfosUseCase {
             "Serial Erro"
         }
     }
-
 }

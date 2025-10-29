@@ -3,7 +3,10 @@ package br.com.sttsoft.ticktzy.extensions
 import android.content.Context
 import com.google.gson.Gson
 
-inline fun <reified T> T.saveToPrefs(context: Context, key: String) {
+inline fun <reified T> T.saveToPrefs(
+    context: Context,
+    key: String,
+) {
     val prefs = context.getSharedPreferences("APP_INFOS_SITEF", Context.MODE_PRIVATE)
     val json = Gson().toJson(this)
     prefs.edit().putString(key, json).apply()
@@ -15,7 +18,10 @@ inline fun <reified T> Context.getFromPrefs(key: String): T? {
     return json?.let { Gson().fromJson(it, T::class.java) }
 }
 
-fun Context.savePref(key: String, value: Any) {
+fun Context.savePref(
+    key: String,
+    value: Any,
+) {
     val prefs = getSharedPreferences("APP_INFOS_TICKETZY", Context.MODE_PRIVATE)
     with(prefs.edit()) {
         when (value) {
@@ -31,7 +37,10 @@ fun Context.savePref(key: String, value: Any) {
     }
 }
 
-inline fun <reified T> Context.getPref(key: String, default: T): T {
+inline fun <reified T> Context.getPref(
+    key: String,
+    default: T,
+): T {
     val prefs = getSharedPreferences("APP_INFOS_TICKETZY", Context.MODE_PRIVATE)
 
     return when (T::class) {

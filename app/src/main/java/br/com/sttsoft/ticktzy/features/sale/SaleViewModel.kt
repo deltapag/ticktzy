@@ -13,9 +13,8 @@ import kotlinx.coroutines.launch
 class SaleViewModel(
     private val productCache: ProductCacheUseCase,
     private val sitef: SitefUseCase,
-    private val prefs: PrefsGateway
+    private val prefs: PrefsGateway,
 ) : BaseViewModel<SaleState, SaleEvent, SaleEffect>(SaleState()) {
-
     var infos: InfoResponse? = null
         private set
 
@@ -25,9 +24,10 @@ class SaleViewModel(
         when (event) {
             SaleEvent.Load -> load()
             is SaleEvent.Search -> search(event.query)
-            is SaleEvent.UpdateProducts -> setState {
-                copy(filtered = event.list, total = event.list.sumOf { (it.price ?: 0.0) * (it.quantity ?: 0) })
-            }
+            is SaleEvent.UpdateProducts ->
+                setState {
+                    copy(filtered = event.list, total = event.list.sumOf { (it.price ?: 0.0) * (it.quantity ?: 0) })
+                }
             is SaleEvent.CashPay -> cashPay(event.received, event.change)
             is SaleEvent.PixPay -> pixPay()
             is SaleEvent.CardPay -> cardPay(event.type)
@@ -35,26 +35,50 @@ class SaleViewModel(
         }
     }
 
-    fun setInfos(value: InfoResponse?) { infos = value }
-
-    private fun load() = viewModelScope.launch {
-        setState { copy(loading = true) }
-        val prods = productCache.lerProdutos()
-        setState { copy(loading = false, products = prods, filtered = prods,
-            total = prods.sumOf { (it.price ?: 0.0) * (it.quantity ?: 0) }) }
+    fun setInfos(value: InfoResponse?) {
+        infos = value
     }
+
+    private fun load() =
+        viewModelScope.launch {
+            setState { copy(loading = true) }
+            val prods = productCache.lerProdutos()
+            setState {
+                copy(
+                    loading = false,
+                    products = prods,
+                    filtered = prods,
+                    total = prods.sumOf { (it.price ?: 0.0) * (it.quantity ?: 0) },
+                )
+            }
+        }
 
     private fun search(q: String) {
         val base = state.value.products
         val filtered = if (q.isBlank()) base else base.filter { it.name.contains(q, true) }
-        setState { copy(query = q, filtered = filtered,
-            total = filtered.sumOf { (it.price ?: 0.0) * (it.quantity ?: 0) }) }
+        setState {
+            copy(
+                query = q,
+                filtered = filtered,
+                total = filtered.sumOf { (it.price ?: 0.0) * (it.quantity ?: 0) },
+            )
+        }
     }
 
-    private fun cashPay(received: Double, change: Double) = viewModelScope.launch {
+    private fun cashPay(
+        received: Double,
+        change: Double,
+    ) = viewModelScope.launch {
         val total = state.value.total
         if (total == 0.0) return@launch sendEffect { SaleEffect.Toast("Sem produtos adicionados!", true) }
-        if (received <= 0.0 || received < total) return@launch sendEffect { SaleEffect.Toast("Valor insuficiente!", true) }
+        if (received <= 0.0 || received < total) {
+            return@launch sendEffect {
+                SaleEffect.Toast(
+                    "Valor insuficiente!",
+                    true,
+                )
+            }
+        }
 
         prefs.putInt("SALES_MADE", prefs.getInt("SALES_MADE", 0) + 1)
         prefs.putInt("MONEY_TYPE", prefs.getInt("MONEY_TYPE", 0) + 1)
@@ -67,28 +91,37 @@ class SaleViewModel(
         sendEffect { SaleEffect.Close }
     }
 
-    private fun pixPay() = viewModelScope.launch {
-        val total = state.value.total
-        if (total == 0.0) return@launch sendEffect { SaleEffect.Toast("Sem produtos adicionados!", true) }
-        paymentType = "pix"
-        launchPayment(mod = "122", isPix = true)
-    }
+    private fun pixPay() =
+        viewModelScope.launch {
+            val total = state.value.total
+            if (total == 0.0) return@launch sendEffect { SaleEffect.Toast("Sem produtos adicionados!", true) }
+            paymentType = "pix"
+            launchPayment(mod = "122", isPix = true)
+        }
 
-    private fun cardPay(type: String) = viewModelScope.launch {
-        val total = state.value.total
-        if (total == 0.0) return@launch sendEffect { SaleEffect.Toast("Sem produtos adicionados!", true) }
-        paymentType = type
-        launchPayment(mod = if (type == "debit") "2" else "3")
-    }
+    private fun cardPay(type: String) =
+        viewModelScope.launch {
+            val total = state.value.total
+            if (total == 0.0) return@launch sendEffect { SaleEffect.Toast("Sem produtos adicionados!", true) }
+            paymentType = type
+            launchPayment(mod = if (type == "debit") "2" else "3")
+        }
 
-    private fun launchPayment(mod: String, isPix: Boolean = false, isTLSEnabled: Boolean = false) = viewModelScope.launch {
+    private fun launchPayment(
+        mod: String,
+        isPix: Boolean = false,
+        isTLSEnabled: Boolean = false,
+    ) = viewModelScope.launch {
         val i = infos ?: return@launch sendEffect { SaleEffect.Toast("Infos do SiTef ausentes.", true) }
 
         val intent = sitef.payment(i, state.value.total, mod, isPix, isTLSEnabled)
         sendEffect { SaleEffect.LaunchPayment(intent) }
     }
 
-    private fun handlePaymentResult(resultCode: Int, data: Intent?) = viewModelScope.launch {
+    private fun handlePaymentResult(
+        resultCode: Int,
+        data: Intent?,
+    ) = viewModelScope.launch {
         val b = data?.extras ?: return@launch
         if (resultCode != Activity.RESULT_OK) return@launch
 

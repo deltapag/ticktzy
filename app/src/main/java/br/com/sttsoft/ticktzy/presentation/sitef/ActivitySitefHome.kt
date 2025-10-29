@@ -21,8 +21,7 @@ import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 
-class ActivitySitefHome: BaseActivity() {
-
+class ActivitySitefHome : BaseActivity() {
     private val binding: ActivitySitefHomeBinding by lazy {
         ActivitySitefHomeBinding.inflate(layoutInflater)
     }
@@ -99,45 +98,53 @@ class ActivitySitefHome: BaseActivity() {
     }
 
     private fun initActivityResultLaucher() {
-        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val data = result.data
-            val bundle = data?.extras
-            if (bundle != null) {
-                if (result.resultCode == RESULT_OK) {
-                    handleType()
+        activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                val data = result.data
+                val bundle = data?.extras
+                if (bundle != null) {
+                    if (result.resultCode == RESULT_OK) {
+                        handleType()
 
-                    val comprovanteEstab = bundle.getString("VIA_ESTABELECIMENTO")
-                    val comprovanteCli = bundle.getString("VIA_CLIENTE")
-                    if (comprovanteEstab != null && comprovanteEstab.trim { it <= ' ' }.isNotEmpty()) {
-                        printReceipt(comprovanteEstab)
-                    } else if (comprovanteCli != null && comprovanteCli.trim { it <= ' ' }.isNotEmpty()) {
-                        printReceipt(comprovanteCli)
+                        val comprovanteEstab = bundle.getString("VIA_ESTABELECIMENTO")
+                        val comprovanteCli = bundle.getString("VIA_CLIENTE")
+                        if (comprovanteEstab != null && comprovanteEstab.trim { it <= ' ' }.isNotEmpty()) {
+                            printReceipt(comprovanteEstab)
+                        } else if (comprovanteCli != null && comprovanteCli.trim { it <= ' ' }.isNotEmpty()) {
+                            printReceipt(comprovanteCli)
+                        }
+
+                        if (!type.equals("reprint")) {
+                            val dialog =
+                                ConfirmDialog(
+                                    { option ->
+                                        when (option) {
+                                            "yes" -> {
+                                                if (comprovanteCli != null &&
+                                                    comprovanteCli.trim { it <= ' ' }.isNotEmpty()
+                                                ) {
+                                                    printReceipt(comprovanteCli)
+
+                                                    finish()
+                                                }
+                                            }
+                                            "no" -> {
+                                                finish()
+                                            }
+                                        }
+                                    },
+                                    getString(R.string.dialog_print_question_title),
+                                    getString(R.string.dialog_print_question_body),
+                                )
+                            dialog.show(supportFragmentManager, "PrintQuestionDialog")
+                        } else {
+                            finish()
+                        }
                     }
-
-                    if (!type.equals("reprint")) {
-                        val dialog = ConfirmDialog ({ option ->
-                            when (option) {
-                                "yes" -> {
-                                    if (comprovanteCli != null && comprovanteCli.trim { it <= ' ' }.isNotEmpty()) {
-                                        printReceipt(comprovanteCli)
-
-                                        finish()
-                                    }
-                                }
-                                "no" -> {
-                                    finish()
-                                }
-                            }
-                        },getString(R.string.dialog_print_question_title), getString(R.string.dialog_print_question_body))
-                        dialog.show(supportFragmentManager, "PrintQuestionDialog")
-                    } else {
-                        finish()
-                    }
+                } else {
+                    finish()
                 }
-            } else {
-                finish()
             }
-        }
     }
 
     private fun isPrinterServiceAvailable(): Boolean {
@@ -146,35 +153,39 @@ class ActivitySitefHome: BaseActivity() {
 
     private fun printReceipt(viaEstab: String) {
         if (isPrinterServiceAvailable()) {
-            val formattedViaEstab = viaEstab.replace(": ", ":")
-                .replace(" T", "T")
-                .replace(" R", "R")
-                .replace(" F", "F")
+            val formattedViaEstab =
+                viaEstab.replace(": ", ":")
+                    .replace(" T", "T")
+                    .replace(" R", "R")
+                    .replace(" F", "F")
 
-
-            printerService.printText(formattedViaEstab,
+            printerService.printText(
+                formattedViaEstab,
                 object : IOnPrintFinished.Stub() {
                     override fun onSuccess() {
                         Toast.makeText(
                             this@ActivitySitefHome,
                             "Impresso com sucesso",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     }
 
-                    override fun onFailed(error: Int, msg: String) {
+                    override fun onFailed(
+                        error: Int,
+                        msg: String,
+                    ) {
                         Toast.makeText(
                             this@ActivitySitefHome,
                             "Erro na Impressora: $msg",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     }
-                })
+                },
+            )
         } else {
             Toast.makeText(this, "Impressora indisponível", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     private fun handleType() {
         when (type) {

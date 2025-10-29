@@ -7,7 +7,8 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface InfoRepository {
-
     @POST("pos/init")
-    fun getInfos(@Body body: TerminalWrapper) : Call<InfoResponse>
+    fun getInfos(
+        @Body body: TerminalWrapper,
+    ): Call<InfoResponse>
 }

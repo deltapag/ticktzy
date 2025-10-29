@@ -9,5 +9,5 @@ data class InfoResponse(
     val maxDiasRelatorio: Int,
     val AtualizacaoRemota: AtualizacaoRemota,
     val Pagamento: Pagamento,
-    val App: App
+    val App: App,
 )

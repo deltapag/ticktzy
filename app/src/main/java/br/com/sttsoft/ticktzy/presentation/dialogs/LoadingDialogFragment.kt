@@ -8,8 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import br.com.sttsoft.ticktzy.R
 
-class LoadingDialogFragment: DialogFragment() {
-
+class LoadingDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.setCancelable(false)
@@ -20,7 +19,7 @@ class LoadingDialogFragment: DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.dialog_loading, container, false)
     }
@@ -31,7 +30,7 @@ class LoadingDialogFragment: DialogFragment() {
         super.onStart()
         dialog?.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+            ViewGroup.LayoutParams.MATCH_PARENT,
         )
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
     }

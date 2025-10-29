@@ -8,5 +8,5 @@ data class SaleState(
     val products: List<product> = emptyList(),
     val filtered: List<product> = emptyList(),
     val total: Double = 0.0,
-    val query: String = ""
-): UiState
+    val query: String = "",
+) : UiState

@@ -13,27 +13,36 @@ import coil.load
 
 class ProductAdapter(
     productList: List<product>,
-    private val onTotalChanged: (Double) -> Unit
+    private val onTotalChanged: (Double) -> Unit,
 ) : RecyclerView.Adapter<ProductViewHolder>() {
-
     private val originalList = productList.toList()
     private val filteredList = mutableListOf<product>().apply { addAll(originalList.filter { it.habilitado }) }
 
     private var selectedPosition: Int = RecyclerView.NO_POSITION
     private var lastClickTime = 0L
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ProductViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.component_product_item, parent, false)
         return ProductViewHolder(view)
     }
 
     override fun getItemCount(): Int = filteredList.size
 
-    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ProductViewHolder,
+        position: Int,
+    ) {
         bindItem(holder, filteredList[position], position)
     }
 
-    override fun onBindViewHolder(holder: ProductViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: ProductViewHolder,
+        position: Int,
+        payloads: MutableList<Any>,
+    ) {
         val item = filteredList[position]
         val isSelected = position == selectedPosition
 
@@ -54,7 +63,12 @@ class ProductAdapter(
                     holder.ivProduct.alpha = if (isSelected) 0.5f else 1f
                 } else {
                     if (item.photo.isNotEmpty()) {
-                        holder.tvTitle.text = if (isSelected) item.name else String.format("%s \n%s", item.price.toReal(), item.name)
+                        holder.tvTitle.text =
+                            if (isSelected) {
+                                item.name
+                            } else {
+                                String.format("%s \n%s", item.price.toReal(), item.name)
+                            }
                     } else {
                         holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
                     }
@@ -65,7 +79,11 @@ class ProductAdapter(
         }
     }
 
-    private fun bindItem(holder: ProductViewHolder, item: product, position: Int) {
+    private fun bindItem(
+        holder: ProductViewHolder,
+        item: product,
+        position: Int,
+    ) {
         val isSelected = position == selectedPosition
 
         holder.tvBadge.text = item.quantity.toString()
@@ -79,12 +97,16 @@ class ProductAdapter(
             holder.tvName.visibility = if (isSelected) View.GONE else View.VISIBLE
             holder.ivProduct.visibility = View.GONE
             if (item.photo.isNotEmpty()) {
-                holder.tvTitle.text = if (isSelected) item.name else String.format("%s \n%s", item.price.toReal(), item.name)
+                holder.tvTitle.text =
+                    if (isSelected) {
+                        item.name
+                    } else {
+                        String.format("%s \n%s", item.price.toReal(), item.name)
+                    }
             } else {
                 holder.tvTitle.text = if (isSelected) item.name else item.price.toReal()
             }
         } else {
-
             if (item.photo.isLink()) {
                 holder.ivProduct.load(item.photo)
             } else {
@@ -131,7 +153,7 @@ class ProductAdapter(
             filteredList.addAll(originalList)
         } else {
             val lower = query.lowercase()
-            filteredList.addAll(originalList.filter { it.name.lowercase().contains(lower) && it.habilitado})
+            filteredList.addAll(originalList.filter { it.name.lowercase().contains(lower) && it.habilitado })
         }
         notifyDataSetChanged()
         notifyTotalChanged()

@@ -6,13 +6,9 @@ import android.view.View
 import br.com.sttsoft.ticktzy.R
 import br.com.sttsoft.ticktzy.databinding.ActivityCashierBinding
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
-import com.sunmi.peripheral.printer.InnerPrinterCallback
-import com.sunmi.peripheral.printer.InnerPrinterManager
-import com.sunmi.peripheral.printer.SunmiPrinterService
 import java.text.DecimalFormat
 
-abstract class ActivityCashierBase: BaseActivity() {
-
+abstract class ActivityCashierBase : BaseActivity() {
     override val enablePrinterBinding = true
 
     val binding: ActivityCashierBinding by lazy {
@@ -24,7 +20,6 @@ abstract class ActivityCashierBase: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
 
         setNumberClicks()
         setButtonsClicks()
@@ -46,7 +41,7 @@ abstract class ActivityCashierBase: BaseActivity() {
 
     fun setButtonsClicks() {
         binding.ivDelete.setOnClickListener {
-            currentValue = currentValue / 10;
+            currentValue = currentValue / 10
             updateScreen()
         }
 
@@ -68,7 +63,6 @@ abstract class ActivityCashierBase: BaseActivity() {
         return true
     }
 
-
     fun handleNumberClick(number: String) {
         if (number == "00") {
             currentValue = currentValue * 100 // Adiciona "00" no final
@@ -86,5 +80,4 @@ abstract class ActivityCashierBase: BaseActivity() {
         val formattedValue = decimalFormat.format(currentValue / 100.0)
         binding.tvValor.text = formattedValue
     }
-
 }

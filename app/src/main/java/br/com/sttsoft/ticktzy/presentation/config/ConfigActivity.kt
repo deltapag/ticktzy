@@ -19,19 +19,14 @@ import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.extensions.getPref
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
-import br.com.sttsoft.ticktzy.presentation.cashier.home.ActivityCashierHome
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.InputDialog
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
-import com.sunmi.peripheral.printer.InnerPrinterCallback
-import com.sunmi.peripheral.printer.InnerPrinterManager
-import com.sunmi.peripheral.printer.SunmiPrinterService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ConfigActivity: BaseActivity() {
-
+class ConfigActivity : BaseActivity() {
     override val enablePrinterBinding = true
 
     private val binding: ActivityConfigBinding by lazy {
@@ -54,12 +49,13 @@ class ConfigActivity: BaseActivity() {
     }
 
     fun initActivityResultLaucher() {
-        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                // Trate o resultado aqui
+        activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    // Trate o resultado aqui
+                }
             }
-        }
     }
 
     fun setListeners() {
@@ -77,7 +73,6 @@ class ConfigActivity: BaseActivity() {
         }
 
         binding.btnSitefConfig.setOnClickListener {
-
             val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
 
             infos?.let {
@@ -106,19 +101,21 @@ class ConfigActivity: BaseActivity() {
 
             lifecycleScope.launch {
                 try {
-                    val cnpj = infos
-                        ?.Pagamento
-                        ?.Subadquirencia
-                        ?.firstOrNull()
-                        ?.cnpj
+                    val cnpj =
+                        infos
+                            ?.Pagamento
+                            ?.Subadquirencia
+                            ?.firstOrNull()
+                            ?.cnpj
 
                     cnpj?.let {
-                        val produtos = withContext(Dispatchers.IO) {
-                            ProductSyncUseCase(
-                                ProductCacheUseCase(this@ConfigActivity),
-                                GetProductsUseCase()
-                            ).sync(it)
-                        }
+                        val produtos =
+                            withContext(Dispatchers.IO) {
+                                ProductSyncUseCase(
+                                    ProductCacheUseCase(this@ConfigActivity),
+                                    GetProductsUseCase(),
+                                ).sync(it)
+                            }
 
                         hideLoading()
 
@@ -135,7 +132,6 @@ class ConfigActivity: BaseActivity() {
         }
 
         binding.btnSitefConfigInfos.setOnClickListener {
-
             val infos: InfoResponse? = this.getFromPrefs("SITEF_INFOS")
 
             InputDialog { password, dialog ->
@@ -144,21 +140,28 @@ class ConfigActivity: BaseActivity() {
                         dialog.dismiss()
                         startActivity(Intent(this@ConfigActivity, ConfigSitefInfosActivity::class.java))
                     } else {
-                        ConfirmDialog ({ option ->
-                            when (option) {
-                                "ok" -> {
-                                    dialog.dismiss()
+                        ConfirmDialog(
+                            { option ->
+                                when (option) {
+                                    "ok" -> {
+                                        dialog.dismiss()
+                                    }
                                 }
-                            }
-                        },getString(R.string.dialog_warning_title), getString(R.string.text_dialog_message_password_incorrect), true).show(supportFragmentManager, "ConfirmDialog")
+                            },
+                            getString(
+                                R.string.dialog_warning_title,
+                            ),
+                            getString(
+                                R.string.text_dialog_message_password_incorrect,
+                            ),
+                            true,
+                        ).show(supportFragmentManager, "ConfirmDialog")
                     }
                 }
             }.show(supportFragmentManager, "InputDialog")
         }
 
         binding.btnCashierTest.setOnClickListener {
-
         }
     }
-
 }

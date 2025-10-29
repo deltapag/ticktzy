@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-fun <T> LifecycleOwner.collectState(flow: StateFlow<T>, collector: (T) -> Unit) {
+fun <T> LifecycleOwner.collectState(
+    flow: StateFlow<T>,
+    collector: (T) -> Unit,
+) {
     lifecycleScope.launch {
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             flow.collect { collector(it) }
@@ -16,7 +19,10 @@ fun <T> LifecycleOwner.collectState(flow: StateFlow<T>, collector: (T) -> Unit) 
     }
 }
 
-fun <T> LifecycleOwner.collectEffect(flow: Flow<T>, collector: (T) -> Unit) {
+fun <T> LifecycleOwner.collectEffect(
+    flow: Flow<T>,
+    collector: (T) -> Unit,
+) {
     lifecycleScope.launch {
         repeatOnLifecycle(Lifecycle.State.STARTED) {
             flow.collect { collector(it) }

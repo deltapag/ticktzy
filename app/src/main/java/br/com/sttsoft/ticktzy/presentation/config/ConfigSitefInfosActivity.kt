@@ -1,11 +1,9 @@
 package br.com.sttsoft.ticktzy.presentation.config
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import br.com.sttsoft.ticktzy.R
-import br.com.sttsoft.ticktzy.databinding.ActivityChargeBinding
 import br.com.sttsoft.ticktzy.databinding.ActivityConfigSitefInfosBinding
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.extensions.getPref
@@ -14,8 +12,7 @@ import br.com.sttsoft.ticktzy.extensions.saveToPrefs
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 
-class ConfigSitefInfosActivity: BaseActivity() {
-
+class ConfigSitefInfosActivity : BaseActivity() {
     private val binding: ActivityConfigSitefInfosBinding by lazy {
         ActivityConfigSitefInfosBinding.inflate(layoutInflater)
     }
@@ -42,18 +39,17 @@ class ConfigSitefInfosActivity: BaseActivity() {
             binding.edtDadosSubAdqui.setText(it.Pagamento.Subadquirencia.first().nomeFantasia)
         }
 
-        if(this.getPref("TLS_ENABLED", false)) {
+        if (this.getPref("TLS_ENABLED", false)) {
             binding.btnEnableTLS.text = getString(R.string.button_text_config_enable_tls)
 
             ViewCompat.setBackgroundTintList(
                 binding.btnEnableTLS,
-                ContextCompat.getColorStateList(this, R.color.plus_green)
+                ContextCompat.getColorStateList(this, R.color.plus_green),
             )
         }
     }
 
     private fun setListeners() {
-
         binding.btnBack.setOnClickListener {
             finish()
         }
@@ -76,12 +72,12 @@ class ConfigSitefInfosActivity: BaseActivity() {
         }
 
         binding.btnEnableTLS.setOnClickListener {
-            if(!this.getPref("TLS_ENABLED", false)) {
+            if (!this.getPref("TLS_ENABLED", false)) {
                 binding.btnEnableTLS.text = getString(R.string.button_text_config_enable_tls)
 
                 ViewCompat.setBackgroundTintList(
                     binding.btnEnableTLS,
-                    ContextCompat.getColorStateList(this, R.color.plus_green)
+                    ContextCompat.getColorStateList(this, R.color.plus_green),
                 )
                 this.savePref("TLS_ENABLED", true)
             } else {
@@ -89,12 +85,10 @@ class ConfigSitefInfosActivity: BaseActivity() {
 
                 ViewCompat.setBackgroundTintList(
                     binding.btnEnableTLS,
-                    ContextCompat.getColorStateList(this, R.color.minus_red)
+                    ContextCompat.getColorStateList(this, R.color.minus_red),
                 )
                 this.savePref("TLS_ENABLED", false)
             }
-
-
         }
     }
 }

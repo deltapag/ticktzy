@@ -18,8 +18,7 @@ import com.sunmi.peripheral.printer.InnerPrinterCallback
 import com.sunmi.peripheral.printer.InnerPrinterManager
 import com.sunmi.peripheral.printer.SunmiPrinterService
 
-abstract class BaseActivity: AppCompatActivity() {
-
+abstract class BaseActivity : AppCompatActivity() {
     private var loadingDialog: DialogFragment? = null
 
     protected open val enablePrinterBinding: Boolean = false
@@ -34,7 +33,6 @@ abstract class BaseActivity: AppCompatActivity() {
 
     protected open val enablePosPrinter: Boolean = false
 
-
     private var _posmpPrinterService: PrinterService? = null
     protected val posmpPrinterService: PrinterService? get() = _posmpPrinterService
 
@@ -45,7 +43,12 @@ abstract class BaseActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {override fun handleOnBackPressed() {} })
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {}
+            },
+        )
 
         val nomeSimples = this::class.java.simpleName
         Log.d("indo_para", nomeSimples)
@@ -78,25 +81,30 @@ abstract class BaseActivity: AppCompatActivity() {
         return loadingDialog?.isVisible == true
     }
 
-    fun showToast(message: String, isLongMessage: Boolean = false) {
+    fun showToast(
+        message: String,
+        isLongMessage: Boolean = false,
+    ) {
         if (isLongMessage) {
             Toast.makeText(this@BaseActivity, message, Toast.LENGTH_LONG).show()
         } else {
             Toast.makeText(this@BaseActivity, message, Toast.LENGTH_SHORT).show()
         }
-
     }
 
     private fun bindPrinter() {
-        InnerPrinterManager.getInstance().bindService(this, object : InnerPrinterCallback() {
-            override fun onConnected(service: SunmiPrinterService) {
-                _sunmiPrinterService = service
-            }
+        InnerPrinterManager.getInstance().bindService(
+            this,
+            object : InnerPrinterCallback() {
+                override fun onConnected(service: SunmiPrinterService) {
+                    _sunmiPrinterService = service
+                }
 
-            override fun onDisconnected() {
-                _sunmiPrinterService = null
-            }
-        })
+                override fun onDisconnected() {
+                    _sunmiPrinterService = null
+                }
+            },
+        )
     }
 
     protected inline fun withPrinter(block: (SunmiPrinterService) -> Unit) {
@@ -110,7 +118,6 @@ abstract class BaseActivity: AppCompatActivity() {
         _posmpPrinterService = SmartPosHelper.getInstance().printer
         _posmpPrinterService?.open()
     }
-
 
     private fun releasePosPrinter() {
         _posmpPrinterService = null

@@ -15,10 +15,8 @@ class ConfirmDialog(
     private val onChoose: (String) -> Unit,
     private val title: String,
     private val body: String,
-    private val onlyConfirm: Boolean = false
+    private val onlyConfirm: Boolean = false,
 ) : DialogFragment() {
-
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_confirm, null)
 

@@ -13,5 +13,5 @@ data class Subadquirencia(
     val idEstabelecimento: String,
     val email: String,
     val razaoSocial: String,
-    val tipoPessoa: String
+    val tipoPessoa: String,
 )

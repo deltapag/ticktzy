@@ -4,10 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import br.com.sttsoft.ticktzy.BuildConfig
 import br.com.sttsoft.ticktzy.R
-
 import br.com.sttsoft.ticktzy.databinding.ActivityHomeBinding
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
-import br.com.sttsoft.ticktzy.features.sale.ui.SalesActivity
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.presentation.cashier.home.ActivityCashierHome
 import br.com.sttsoft.ticktzy.presentation.charge.ChargeActivity
@@ -18,8 +16,7 @@ import br.com.sttsoft.ticktzy.presentation.sale.ui.SaleActivity
 import br.com.sttsoft.ticktzy.presentation.sitef.ActivitySitefHome
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 
-class HomeActivity: BaseActivity() {
-
+class HomeActivity : BaseActivity() {
     private val binding: ActivityHomeBinding by lazy {
         ActivityHomeBinding.inflate(layoutInflater)
     }
@@ -31,7 +28,7 @@ class HomeActivity: BaseActivity() {
         setContentView(binding.root)
 
         infos = this.getFromPrefs("SITEF_INFOS")
-        
+
         setVersionCode()
         setListeners()
     }
@@ -50,7 +47,6 @@ class HomeActivity: BaseActivity() {
         }
 
         binding.btnReports.setOnClickListener {
-
         }
 
         binding.btnConfig.setOnClickListener {
@@ -58,20 +54,28 @@ class HomeActivity: BaseActivity() {
         }
 
         binding.btnCashierFunctions.setOnClickListener {
-
             InputDialog { password, dialog ->
                 infos?.let {
                     if (it.App.senhaDoApp.equals(password)) {
                         dialog.dismiss()
                         startActivity(Intent(this, ActivityCashierHome::class.java))
                     } else {
-                        ConfirmDialog ({ option ->
-                            when (option) {
-                                "ok" -> {
-                                    dialog.dismiss()
+                        ConfirmDialog(
+                            { option ->
+                                when (option) {
+                                    "ok" -> {
+                                        dialog.dismiss()
+                                    }
                                 }
-                            }
-                        },getString(R.string.dialog_warning_title), getString(R.string.text_dialog_message_password_incorrect), true).show(supportFragmentManager, "ConfirmDialog")
+                            },
+                            getString(
+                                R.string.dialog_warning_title,
+                            ),
+                            getString(
+                                R.string.text_dialog_message_password_incorrect,
+                            ),
+                            true,
+                        ).show(supportFragmentManager, "ConfirmDialog")
                     }
                 }
             }.show(supportFragmentManager, "InputDialog")
@@ -84,13 +88,22 @@ class HomeActivity: BaseActivity() {
                         dialog.dismiss()
                         startActivity(Intent(this, ActivitySitefHome::class.java))
                     } else {
-                        ConfirmDialog ({ option ->
-                            when (option) {
-                                "ok" -> {
-                                    dialog.dismiss()
+                        ConfirmDialog(
+                            { option ->
+                                when (option) {
+                                    "ok" -> {
+                                        dialog.dismiss()
+                                    }
                                 }
-                            }
-                        },getString(R.string.dialog_warning_title), getString(R.string.text_dialog_message_password_incorrect), true).show(supportFragmentManager, "ConfirmDialog")
+                            },
+                            getString(
+                                R.string.dialog_warning_title,
+                            ),
+                            getString(
+                                R.string.text_dialog_message_password_incorrect,
+                            ),
+                            true,
+                        ).show(supportFragmentManager, "ConfirmDialog")
                     }
                 }
             }.show(supportFragmentManager, "InputDialog")

@@ -6,8 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import br.com.sttsoft.ticktzy.R
 
-
-class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val tvBadge: TextView = itemView.findViewById(R.id.tv_badge)
     val tvTitle: TextView = itemView.findViewById(R.id.tv_title)
     val ivProduct: ImageView = itemView.findViewById(R.id.iv_product)

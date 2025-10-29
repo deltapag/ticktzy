@@ -15,12 +15,8 @@ import br.com.sttsoft.ticktzy.presentation.cashier.finish.components.TableInfosA
 import br.com.sttsoft.ticktzy.presentation.cashier.finish.components.tableInfos
 import br.com.sttsoft.ticktzy.presentation.cashier.start.ActivityCashierStart
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
-import com.sunmi.peripheral.printer.InnerPrinterCallback
-import com.sunmi.peripheral.printer.InnerPrinterManager
-import com.sunmi.peripheral.printer.SunmiPrinterService
 
-class ActivityCashierFinish: BaseActivity() {
-
+class ActivityCashierFinish : BaseActivity() {
     override val enablePrinterBinding = true
 
     private val binding: ActivityCashierFinishBinding by lazy {
@@ -41,39 +37,108 @@ class ActivityCashierFinish: BaseActivity() {
     }
 
     private fun loadData() {
-        //itens.add(tableInfos.tableSection(getString(R.string.text_cashier_table_finish)))
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_sales_made), this.getPref("SALES_MADE", 0).toString()))
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_charge_made), this.getPref("CHARGE_MADE", 0).toString()))
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_sangria_made), this.getPref("SANGRIA_MADE", 0).toString()))
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_reinforce_made), this.getPref("REINFORCE_MADE", 0).toString()))
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_cancels_made), this.getPref("CANCELS_MADE", 0).toString()))
+        // itens.add(tableInfos.tableSection(getString(R.string.text_cashier_table_finish)))
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_sales_made),
+                this.getPref("SALES_MADE", 0).toString(),
+            ),
+        )
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_charge_made),
+                this.getPref("CHARGE_MADE", 0).toString(),
+            ),
+        )
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_sangria_made),
+                this.getPref("SANGRIA_MADE", 0).toString(),
+            ),
+        )
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_reinforce_made),
+                this.getPref("REINFORCE_MADE", 0).toString(),
+            ),
+        )
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_cancels_made),
+                this.getPref("CANCELS_MADE", 0).toString(),
+            ),
+        )
         itens.add(tableInfos.tableSection(getString(R.string.text_cashier_table_payment_types)))
 
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_type_debit),
-            String.format(getString(R.string.text_cashier_table_value),
-                this.getPref("DEBIT_TYPE", 0).toString(),
-                this.getPref("DEBIT_VALUE", 0.0).toReal())))
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_type_debit),
+                String.format(
+                    getString(R.string.text_cashier_table_value),
+                    this.getPref("DEBIT_TYPE", 0).toString(),
+                    this.getPref("DEBIT_VALUE", 0.0).toReal(),
+                ),
+            ),
+        )
 
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_type_credit),
-            String.format(getString(R.string.text_cashier_table_value),
-                this.getPref("CREDIT_TYPE", 0).toString(),
-                this.getPref("CREDIT_VALUE", 0.0).toReal())))
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_type_credit),
+                String.format(
+                    getString(R.string.text_cashier_table_value),
+                    this.getPref("CREDIT_TYPE", 0).toString(),
+                    this.getPref("CREDIT_VALUE", 0.0).toReal(),
+                ),
+            ),
+        )
 
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_type_pix),
-            String.format(getString(R.string.text_cashier_table_value),
-                this.getPref("PIX_TYPE", 0).toString(),
-                this.getPref("PIX_VALUE", 0.0).toReal())))
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_type_pix),
+                String.format(
+                    getString(R.string.text_cashier_table_value),
+                    this.getPref("PIX_TYPE", 0).toString(),
+                    this.getPref("PIX_VALUE", 0.0).toReal(),
+                ),
+            ),
+        )
 
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_type_money),
-            String.format(getString(R.string.text_cashier_table_value),
-                this.getPref("MONEY_TYPE", 0).toString(),
-                this.getPref("MONEY_VALUE", 0.0).toReal())))
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_type_money),
+                String.format(
+                    getString(R.string.text_cashier_table_value),
+                    this.getPref("MONEY_TYPE", 0).toString(),
+                    this.getPref("MONEY_VALUE", 0.0).toReal(),
+                ),
+            ),
+        )
 
         itens.add(tableInfos.tableSection(getString(R.string.text_cashier_table_final_values)))
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_start_money), this.getPref("CAIXA_INICIAL", 0L).toRealFormatado()))
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_sangria_money), "- "+this.getPref("CAIXA_SANGRIA", 0L).toRealFormatado()))
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_reinforce_money), "+ "+this.getPref("CAIXA_REINFORCE", 0L).toRealFormatado()))
-        itens.add(tableInfos.tableRow(getString(R.string.text_cashier_table_finish_money), this.getPref("CAIXA", 0L).toRealFormatado()))
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_start_money),
+                this.getPref("CAIXA_INICIAL", 0L).toRealFormatado(),
+            ),
+        )
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_sangria_money),
+                "- " + this.getPref("CAIXA_SANGRIA", 0L).toRealFormatado(),
+            ),
+        )
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_reinforce_money),
+                "+ " + this.getPref("CAIXA_REINFORCE", 0L).toRealFormatado(),
+            ),
+        )
+        itens.add(
+            tableInfos.tableRow(
+                getString(R.string.text_cashier_table_finish_money),
+                this.getPref("CAIXA", 0L).toRealFormatado(),
+            ),
+        )
     }
 
     private fun setAdapter() {
@@ -85,7 +150,6 @@ class ActivityCashierFinish: BaseActivity() {
     }
 
     private fun setButtonClick() {
-
         binding.ivClose.setOnClickListener {
             finish()
         }
@@ -95,20 +159,21 @@ class ActivityCashierFinish: BaseActivity() {
         }
 
         binding.llConfirm.setOnClickListener {
-            val dialog = ConfirmDialog ({ option ->
-                when (option) {
-                    "yes" -> {
-                        PrinterUseCase(sunmiPrinterService).printFinish(this)
+            val dialog =
+                ConfirmDialog({ option ->
+                    when (option) {
+                        "yes" -> {
+                            PrinterUseCase(sunmiPrinterService).printFinish(this)
 
-                        clearInformations()
+                            clearInformations()
 
-                        val intent = Intent(this, ActivityCashierStart::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
+                            val intent = Intent(this, ActivityCashierStart::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        }
+                        "no" -> {}
                     }
-                    "no" -> {}
-                }
-            },getString(R.string.text_cashier_title_finish), getString(R.string.text_cashier_finish))
+                }, getString(R.string.text_cashier_title_finish), getString(R.string.text_cashier_finish))
             dialog.show(supportFragmentManager, "ConfirmDialog")
         }
     }
@@ -131,5 +196,4 @@ class ActivityCashierFinish: BaseActivity() {
         this.savePref("CAIXA_REINFORCE", 0L)
         this.savePref("CAIXA", 0L)
     }
-
 }

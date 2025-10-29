@@ -4,5 +4,5 @@ data class LojaSitef(
     val id: String,
     var cnpj: String,
     var codigoLojaSitef: String,
-    val nomeLoja: String
+    val nomeLoja: String,
 )

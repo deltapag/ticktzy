@@ -10,5 +10,5 @@ data class Terminal(
     val VrsCliSitef: String,
     val TipoConexao: String,
     val MacAddress: String,
-    val OperadoraTelecom: String
+    val OperadoraTelecom: String,
 )

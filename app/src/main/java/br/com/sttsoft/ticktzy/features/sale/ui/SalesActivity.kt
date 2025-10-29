@@ -1,30 +1,8 @@
 package br.com.sttsoft.ticktzy.features.sale.ui
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import br.com.sttsoft.ticktzy.R
-import br.com.sttsoft.ticktzy.core.prefs.PrefsGatewayImpl
-import br.com.sttsoft.ticktzy.core.ui.defaultVmFactory
-import br.com.sttsoft.ticktzy.core.ui.viewbinding.collectEffect
-import br.com.sttsoft.ticktzy.core.ui.viewbinding.collectState
-import br.com.sttsoft.ticktzy.databinding.ActivitySaleBinding
-import br.com.sttsoft.ticktzy.domain.ProductCacheUseCase
-import br.com.sttsoft.ticktzy.domain.SitefUseCase
-import br.com.sttsoft.ticktzy.extensions.getFromPrefs
-import br.com.sttsoft.ticktzy.features.sale.SaleEffect
-import br.com.sttsoft.ticktzy.features.sale.SaleEvent
-import br.com.sttsoft.ticktzy.features.sale.SaleViewModel
-import br.com.sttsoft.ticktzy.presentation.sale.components.ProductAdapter
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
-import br.com.sttsoft.ticktzy.presentation.dialogs.ChangeDialog
-import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
-import br.com.sttsoft.ticktzy.presentation.dialogs.PaymentTypeChooseDialog
-import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 
-class SalesActivity: BaseActivity() {
-
+class SalesActivity : BaseActivity() {
     /*
 
     override val enablePrinterBinding = true

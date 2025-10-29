@@ -23,9 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
-class SplashActivity: BaseActivity() {
-
+class SplashActivity : BaseActivity() {
     private val binding: ActivitySplashBinding by lazy {
         ActivitySplashBinding.inflate(layoutInflater)
     }
@@ -49,9 +47,10 @@ class SplashActivity: BaseActivity() {
                 try {
                     val useCaseInfos = GetInfosUseCase(TerminalWrapper(infos))
 
-                    val infosResponse = withContext(Dispatchers.IO) {
-                        useCaseInfos.invoke()
-                    }
+                    val infosResponse =
+                        withContext(Dispatchers.IO) {
+                            useCaseInfos.invoke()
+                        }
 
                     infosResponse?.saveToPrefs(this@SplashActivity, "SITEF_INFOS")
 
@@ -61,20 +60,22 @@ class SplashActivity: BaseActivity() {
 
                     binding.tvStatus.text = "Coletando produtos..."
 
-                    val cnpj = infosResponse
-                        ?.Pagamento
-                        ?.Subadquirencia
-                        ?.firstOrNull()
-                        ?.cnpj
+                    val cnpj =
+                        infosResponse
+                            ?.Pagamento
+                            ?.Subadquirencia
+                            ?.firstOrNull()
+                            ?.cnpj
 
                     // Agora chama a coleta de produtos
                     if (cnpj != null) {
-                        val produtos = withContext(Dispatchers.IO) {
-                            ProductSyncUseCase(
-                                ProductCacheUseCase(this@SplashActivity),
-                                GetProductsUseCase()
-                            ).sync(cnpj)
-                        }
+                        val produtos =
+                            withContext(Dispatchers.IO) {
+                                ProductSyncUseCase(
+                                    ProductCacheUseCase(this@SplashActivity),
+                                    GetProductsUseCase(),
+                                ).sync(cnpj)
+                            }
                     }
 
                     binding.tvStatus.text = "Sucesso! Iniciando..."
@@ -86,9 +87,6 @@ class SplashActivity: BaseActivity() {
                         startActivity(Intent(this@SplashActivity, ActivityCashierStart::class.java))
                         finish()
                     }
-
-
-
                 } catch (e: Exception) {
                     binding.tvStatus.text = "Erro ao obter dados: ${e.message}"
                 }
@@ -117,21 +115,22 @@ class SplashActivity: BaseActivity() {
      * Obtém o ComponentName de acordo com o modelo de terminal
      */
     private fun getHomeAppComponentName(): ComponentName {
-        val pkg = when (Build.MODEL) {
-            "GPOS780" -> getString(R.string.gertec_gpos780)
-            "GPOS760" -> getString(R.string.gertec_gpos760)
-            "GPOS720" -> getString(R.string.gertec_gpos720)
-            "P2-B" -> getString(R.string.sunmi_P2)
-            "P2-A11" -> getString(R.string.sunmi_P2A11)
-            "L400" -> getString(R.string.positivo_L400)
-            "T19" -> getString(R.string.tectoy_T19)
-            "T8" -> getString(R.string.tectoy_T8)
-            "T4" -> getString(R.string.tectoy_T4)
-            "DX4000" -> getString(R.string.ingenico_dx4000)
-            "EX6000" -> getString(R.string.ingenico_ex6000)
-            "EX4000" -> getString(R.string.ingenico_ex4000)
-            else -> getString(R.string.ingenico_dx8000)
-        }
+        val pkg =
+            when (Build.MODEL) {
+                "GPOS780" -> getString(R.string.gertec_gpos780)
+                "GPOS760" -> getString(R.string.gertec_gpos760)
+                "GPOS720" -> getString(R.string.gertec_gpos720)
+                "P2-B" -> getString(R.string.sunmi_P2)
+                "P2-A11" -> getString(R.string.sunmi_P2A11)
+                "L400" -> getString(R.string.positivo_L400)
+                "T19" -> getString(R.string.tectoy_T19)
+                "T8" -> getString(R.string.tectoy_T8)
+                "T4" -> getString(R.string.tectoy_T4)
+                "DX4000" -> getString(R.string.ingenico_dx4000)
+                "EX6000" -> getString(R.string.ingenico_ex6000)
+                "EX4000" -> getString(R.string.ingenico_ex4000)
+                else -> getString(R.string.ingenico_dx8000)
+            }
         return ComponentName(pkg, "br.com.bin.service.DefineHomeAppService")
     }
 }

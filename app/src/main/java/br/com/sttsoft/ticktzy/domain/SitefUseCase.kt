@@ -2,9 +2,6 @@ package br.com.sttsoft.ticktzy.domain
 
 import android.content.Context
 import android.content.Intent
-import androidx.collection.intSetOf
-import br.com.sttsoft.ticktzy.extensions.getPref
-import br.com.sttsoft.ticktzy.extensions.isUsingCellular
 import br.com.sttsoft.ticktzy.extensions.removeSpecialChars
 import br.com.sttsoft.ticktzy.extensions.toSitefFormat
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
@@ -13,16 +10,17 @@ import java.util.Calendar
 import java.util.Locale
 
 class SitefUseCase(var context: Context) {
-
-    private fun getDefaultIntentParameters(infos: InfoResponse, isTLSEnabled: Boolean = false) : Intent {
+    private fun getDefaultIntentParameters(
+        infos: InfoResponse,
+        isTLSEnabled: Boolean = false,
+    ): Intent {
         var i = Intent("br.com.softwareexpress.sitef.msitef.ACTIVITY_CLISITEF")
 
         i.putExtra("operador", "mSiTef")
         i.putExtra("timeoutColeta", "30")
 
         infos?.apply {
-
-            i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
+            i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip + ":" + infos.Pagamento.sitefPublico.porta)
             /*if (isTLSEnabled) {
                 i.putExtra("enderecoSitef", "tls-prod.fiservapp.com:443")
             } else {
@@ -50,7 +48,6 @@ class SitefUseCase(var context: Context) {
 
         return i
     }
-
 
     fun testConnection(infos: InfoResponse): Intent {
         val calendar = Calendar.getInstance()
@@ -94,7 +91,13 @@ class SitefUseCase(var context: Context) {
         return i
     }
 
-    fun payment(infos: InfoResponse, valor: Double, modalidade: String, isPix: Boolean, isTLSEnabled: Boolean = false): Intent {
+    fun payment(
+        infos: InfoResponse,
+        valor: Double,
+        modalidade: String,
+        isPix: Boolean,
+        isTLSEnabled: Boolean = false,
+    ): Intent {
         val calendar = Calendar.getInstance()
 
         val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
@@ -116,7 +119,10 @@ class SitefUseCase(var context: Context) {
         return i
     }
 
-    fun trace(infos: InfoResponse, isTLSEnabled: Boolean = false) : Intent {
+    fun trace(
+        infos: InfoResponse,
+        isTLSEnabled: Boolean = false,
+    ): Intent {
         val calendar = Calendar.getInstance()
 
         val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
@@ -137,7 +143,10 @@ class SitefUseCase(var context: Context) {
         return i
     }
 
-    fun cancelation(infos: InfoResponse, isTLSEnabled: Boolean = false) : Intent {
+    fun cancelation(
+        infos: InfoResponse,
+        isTLSEnabled: Boolean = false,
+    ): Intent {
         val calendar = Calendar.getInstance()
 
         val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
@@ -158,7 +167,10 @@ class SitefUseCase(var context: Context) {
         return i
     }
 
-    fun reprint(infos: InfoResponse, isTLSEnabled: Boolean = false) : Intent {
+    fun reprint(
+        infos: InfoResponse,
+        isTLSEnabled: Boolean = false,
+    ): Intent {
         val calendar = Calendar.getInstance()
 
         val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
@@ -173,12 +185,15 @@ class SitefUseCase(var context: Context) {
         i.putExtra("data", date)
         i.putExtra("hora", time)
         i.putExtra("numeroCupom", numeroCupom)
-        i.putExtra("modalidade", "112");
+        i.putExtra("modalidade", "112")
 
         return i
     }
 
-    fun directAccess(infos: InfoResponse, isTLSEnabled: Boolean = false) : Intent {
+    fun directAccess(
+        infos: InfoResponse,
+        isTLSEnabled: Boolean = false,
+    ): Intent {
         val calendar = Calendar.getInstance()
 
         val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
@@ -194,9 +209,8 @@ class SitefUseCase(var context: Context) {
         i.putExtra("data", date)
         i.putExtra("hora", time)
         i.putExtra("numeroCupom", numeroCupom)
-        i.putExtra("modalidade", "110");
+        i.putExtra("modalidade", "110")
 
         return i
     }
-
 }

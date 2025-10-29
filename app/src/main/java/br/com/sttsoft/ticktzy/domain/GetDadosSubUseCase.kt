@@ -3,9 +3,7 @@ package br.com.sttsoft.ticktzy.domain
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
 
 class GetDadosSubUseCase {
-
     fun getDadosSub(infos: InfoResponse): String {
-
         val s = infos.Pagamento.Subadquirencia[0]
 
         return buildString {
@@ -18,15 +16,19 @@ class GetDadosSubUseCase {
             append("06").append(count(useValidInformation(s.mcc))).append(useValidInformation(s.mcc))
             append("07").append(count(useValidInformation(s.cnpj))).append(useValidInformation(s.cnpj))
             append("08").append(count(useValidInformation(s.telefoneNro))).append(useValidInformation(s.telefoneNro))
-            append("09").append(count(useValidInformation(s.idEstabelecimento))).append(useValidInformation(s.idEstabelecimento))
+            append(
+                "09",
+            ).append(count(useValidInformation(s.idEstabelecimento))).append(useValidInformation(s.idEstabelecimento))
             append("10").append(count(useValidInformation(s.email))).append(useValidInformation(s.email))
             append("11").append(count(useValidInformation(s.razaoSocial))).append(useValidInformation(s.razaoSocial))
             append("12").append(count(useValidInformation(s.tipoPessoa))).append(useValidInformation(s.tipoPessoa))
         }
     }
 
-
-    private fun useValidInformation(data: String?, defaultValue: String = ""): String {
+    private fun useValidInformation(
+        data: String?,
+        defaultValue: String = "",
+    ): String {
         if (data == null) {
             return defaultValue
         } else {

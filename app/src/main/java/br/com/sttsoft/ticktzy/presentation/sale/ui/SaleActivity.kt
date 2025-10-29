@@ -18,21 +18,15 @@ import br.com.sttsoft.ticktzy.domain.SitefUseCase
 import br.com.sttsoft.ticktzy.extensions.getFromPrefs
 import br.com.sttsoft.ticktzy.extensions.getPref
 import br.com.sttsoft.ticktzy.extensions.savePref
-import br.com.sttsoft.ticktzy.extensions.toRealFormatado
 import br.com.sttsoft.ticktzy.presentation.base.BaseActivity
 import br.com.sttsoft.ticktzy.presentation.dialogs.ChangeDialog
-import br.com.sttsoft.ticktzy.presentation.dialogs.PaymentTypeChooseDialog
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
-import br.com.sttsoft.ticktzy.presentation.home.HomeActivity
+import br.com.sttsoft.ticktzy.presentation.dialogs.PaymentTypeChooseDialog
 import br.com.sttsoft.ticktzy.presentation.sale.components.ProductAdapter
 import br.com.sttsoft.ticktzy.repository.local.product
 import br.com.sttsoft.ticktzy.repository.remote.response.InfoResponse
-import com.sunmi.peripheral.printer.InnerPrinterCallback
-import com.sunmi.peripheral.printer.InnerPrinterManager
-import com.sunmi.peripheral.printer.SunmiPrinterService
 
-class SaleActivity: BaseActivity() {
-
+class SaleActivity : BaseActivity() {
     private val binding: ActivitySaleBinding by lazy {
         ActivitySaleBinding.inflate(layoutInflater)
     }
@@ -60,7 +54,6 @@ class SaleActivity: BaseActivity() {
 
         infos = this.getFromPrefs("SITEF_INFOS")
 
-
         initActivityResultLaucher()
 
         setSearchBarListener()
@@ -70,37 +63,45 @@ class SaleActivity: BaseActivity() {
     }
 
     private fun initActivityResultLaucher() {
-        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val data = result.data
-            val bundle = data?.extras
-            if (bundle != null) {
-                if (result.resultCode == RESULT_OK) {
-                    this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
-                    val comprovanteEstab = bundle.getString("VIA_ESTABELECIMENTO")
-                    if (comprovanteEstab != null && comprovanteEstab.trim { it <= ' ' }.isNotEmpty()) {
-                        printReceipt(comprovanteEstab)
-                    }
-
-                    val dialog = ConfirmDialog ({ option ->
-                        when (option) {
-                            "yes" -> {
-                                val comprovanteCliente = bundle.getString("VIA_CLIENTE")
-                                if (comprovanteCliente != null && comprovanteCliente.trim { it <= ' ' }.isNotEmpty()) {
-                                    printReceipt(comprovanteCliente)
-                                }
-                                printTickets()
-                            }
-                            "no" -> {
-                                printTickets()
-                            }
+        activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                val data = result.data
+                val bundle = data?.extras
+                if (bundle != null) {
+                    if (result.resultCode == RESULT_OK) {
+                        this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
+                        val comprovanteEstab = bundle.getString("VIA_ESTABELECIMENTO")
+                        if (comprovanteEstab != null && comprovanteEstab.trim { it <= ' ' }.isNotEmpty()) {
+                            printReceipt(comprovanteEstab)
                         }
-                    }, getString(R.string.dialog_print_question_title), getString(R.string.dialog_print_question_body))
-                    dialog.show(supportFragmentManager, "PrintQuestionDialog")
+
+                        val dialog =
+                            ConfirmDialog(
+                                { option ->
+                                    when (option) {
+                                        "yes" -> {
+                                            val comprovanteCliente = bundle.getString("VIA_CLIENTE")
+                                            if (comprovanteCliente != null &&
+                                                comprovanteCliente.trim { it <= ' ' }.isNotEmpty()
+                                            ) {
+                                                printReceipt(comprovanteCliente)
+                                            }
+                                            printTickets()
+                                        }
+                                        "no" -> {
+                                            printTickets()
+                                        }
+                                    }
+                                },
+                                getString(R.string.dialog_print_question_title),
+                                getString(R.string.dialog_print_question_body),
+                            )
+                        dialog.show(supportFragmentManager, "PrintQuestionDialog")
+                    }
+                } else {
+                    Toast.makeText(this, "Nenhum dado retornado", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(this, "Nenhum dado retornado", Toast.LENGTH_SHORT).show()
             }
-        }
     }
 
     private fun getProducts() {
@@ -112,24 +113,29 @@ class SaleActivity: BaseActivity() {
             setAdapter()
             hideLoading()
         } else {
-
-            ConfirmDialog ({ option ->
-                when (option) {
-                    "ok" -> {
-                        finish()
+            ConfirmDialog(
+                { option ->
+                    when (option) {
+                        "ok" -> {
+                            finish()
+                        }
                     }
-                }
-            },getString(R.string.dialog_warning_title), getString(R.string.text_dialog_message_no_products)).show(supportFragmentManager, "ConfirmDialog")
-
+                },
+                getString(
+                    R.string.dialog_warning_title,
+                ),
+                getString(R.string.text_dialog_message_no_products),
+            ).show(supportFragmentManager, "ConfirmDialog")
         }
     }
 
     private fun setAdapter() {
         binding.rclProducts.layoutManager = GridLayoutManager(this, 2)
 
-        adapter = ProductAdapter(productList) { total ->
-            binding.paymentBar.setTotalText(getString(R.string.text_sale_price).format(total))
-        }
+        adapter =
+            ProductAdapter(productList) { total ->
+                binding.paymentBar.setTotalText(getString(R.string.text_sale_price).format(total))
+            }
 
         binding.rclProducts.adapter = adapter
     }
@@ -139,7 +145,6 @@ class SaleActivity: BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-
         binding.btnBack.setOnClickListener {
             finish()
         }
@@ -153,67 +158,74 @@ class SaleActivity: BaseActivity() {
 
         binding.paymentBar.setOnCardClick {
             if (verifyTotal()) {
-                val dialog = PaymentTypeChooseDialog ({ tipo ->
-                    when (tipo) {
-                        "sitef" -> {
-                            type = "sitef"
-                            generatePaymentIntent("0")
-                        }
-                        "debit" -> {
-                            type = "debit"
-                            generatePaymentIntent("2")
-                        }
-                        "credit" -> {
-                            type = "credit"
-                            generatePaymentIntent("3")
-                        }
-                        "money" -> {
-                            if (verifyTotal()) {
-                                ChangeDialog(this, adapter.getTotal(), { valorRecebido, troco, dialog ->
+                val dialog =
+                    PaymentTypeChooseDialog({ tipo ->
+                        when (tipo) {
+                            "sitef" -> {
+                                type = "sitef"
+                                generatePaymentIntent("0")
+                            }
+                            "debit" -> {
+                                type = "debit"
+                                generatePaymentIntent("2")
+                            }
+                            "credit" -> {
+                                type = "credit"
+                                generatePaymentIntent("3")
+                            }
+                            "money" -> {
+                                if (verifyTotal()) {
+                                    ChangeDialog(this, adapter.getTotal(), { valorRecebido, troco, dialog ->
 
-                                    if (valorRecebido > 0.0 && valorRecebido >= adapter.getTotal()) {
+                                        if (valorRecebido > 0.0 && valorRecebido >= adapter.getTotal()) {
+                                            this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
+                                            this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
 
-                                        this.savePref("SALES_MADE", this.getPref("SALES_MADE", 0) + 1)
-                                        this.savePref("MONEY_TYPE", this.getPref("MONEY_TYPE", 0) + 1)
+                                            var valor = (valorRecebido - troco)
 
-                                        var valor = (valorRecebido - troco)
+                                            this.savePref("MONEY_VALUE", this.getPref("MONEY_VALUE", 0.0) + valor)
 
-                                        this.savePref("MONEY_VALUE", this.getPref("MONEY_VALUE", 0.0) + valor)
+                                            var caixa = this.getPref("CAIXA", 0L)
 
-                                        var caixa = this.getPref("CAIXA", 0L)
+                                            caixa += ((valorRecebido - troco) * 100).toLong()
 
-                                        caixa += ((valorRecebido - troco) * 100).toLong()
+                                            this.savePref("CAIXA", caixa)
 
-                                        this.savePref("CAIXA", caixa)
+                                            type = "money"
 
-                                        type = "money"
+                                            infos?.let { info ->
+                                                PrinterUseCase(
+                                                    sunmiPrinterService,
+                                                ).moneyReceiptPrint(info, valorRecebido, troco, adapter.getTotal())
+                                            }
 
-                                        infos?.let { info ->
-                                            PrinterUseCase(sunmiPrinterService).moneyReceiptPrint(info, valorRecebido, troco, adapter.getTotal())
+                                            printTickets()
+
+                                            dialog.dismiss()
+
+                                            finish()
+                                        } else {
+                                            showToast("Valor insuficiente!")
                                         }
-
-                                        printTickets()
-
-                                        dialog.dismiss()
-
-                                        finish()
-
-                                    } else {
-                                        showToast("Valor insuficiente!")
-                                    }
-
-                                }, {dialog -> dialog.dismiss() }).show()
+                                    }, { dialog -> dialog.dismiss() }).show()
+                                }
                             }
                         }
-                    }
-                }, true)
+                    }, true)
                 dialog.show(supportFragmentManager, "CardTypeDialog")
             }
         }
     }
 
-    private fun generatePaymentIntent(modalidade: String, isPix: Boolean = false) {
-        infos?.let { SitefUseCase(this).payment(it, adapter.getTotal(), modalidade, isPix, this.getPref("TLS_ENABLED", false)) }
+    private fun generatePaymentIntent(
+        modalidade: String,
+        isPix: Boolean = false,
+    ) {
+        infos?.let {
+            SitefUseCase(
+                this,
+            ).payment(it, adapter.getTotal(), modalidade, isPix, this.getPref("TLS_ENABLED", false))
+        }
             ?.let { activityResultLauncher.launch(it) }
     }
 
@@ -243,37 +255,41 @@ class SaleActivity: BaseActivity() {
 
     private fun printReceipt(viaEstab: String) {
         if (isPrinterServiceAvailable()) {
-            val formattedViaEstab = viaEstab.replace(": ", ":")
-                .replace(" T", "T")
-                .replace(" R", "R")
-                .replace(" F", "F")
+            val formattedViaEstab =
+                viaEstab.replace(": ", ":")
+                    .replace(" T", "T")
+                    .replace(" R", "R")
+                    .replace(" F", "F")
 
-
-            printerService.printText(formattedViaEstab,
+            printerService.printText(
+                formattedViaEstab,
                 object : IOnPrintFinished.Stub() {
                     override fun onSuccess() {
                         Toast.makeText(
                             this@SaleActivity,
                             "Impresso com sucesso",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     }
 
-                    override fun onFailed(error: Int, msg: String) {
+                    override fun onFailed(
+                        error: Int,
+                        msg: String,
+                    ) {
                         Toast.makeText(
                             this@SaleActivity,
                             "Erro na Impressora: $msg",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     }
-                })
+                },
+            )
         } else {
             Toast.makeText(this, "Impressora indisponível", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun printTickets() {
-
         handlePaymentType()
 
         val produtosSelecionados = adapter.getSelectedProducts()

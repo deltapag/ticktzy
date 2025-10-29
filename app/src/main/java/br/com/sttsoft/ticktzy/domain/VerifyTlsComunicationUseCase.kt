@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 
-
 class VerifyTlsComunicationUseCase(var context: Context) {
     fun comunicacaoPermiteTls(): Boolean {
         var result = true

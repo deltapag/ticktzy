@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken
 import java.io.File
 
 class ProductCacheUseCase(private val context: Context) {
-
     private val fileName = "produtos.json"
     private val gson = Gson()
 

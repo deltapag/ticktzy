@@ -14,10 +14,8 @@ import br.com.sttsoft.ticktzy.R
 
 class PaymentTypeChooseDialog(
     private val onSelect: (String) -> Unit,
-    private val moneyIsEnable: Boolean = false
+    private val moneyIsEnable: Boolean = false,
 ) : DialogFragment() {
-
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_payment_type_choose, null)
 

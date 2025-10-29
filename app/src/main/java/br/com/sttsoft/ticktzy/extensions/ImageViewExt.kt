@@ -1,9 +1,9 @@
 package br.com.sttsoft.ticktzy.extensions
 
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
-import android.util.Base64
-import android.graphics.BitmapFactory
 
 fun ImageView.setImageFromBase64(base64String: String) {
     try {

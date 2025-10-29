@@ -1,22 +1,26 @@
 package br.com.sttsoft.ticktzy.presentation.sale.components
 
-import br.com.sttsoft.ticktzy.presentation.sale.components.ProductAdapter
 import br.com.sttsoft.ticktzy.repository.local.product
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ProductAdapterTest {
-
-    private fun createProduct(name: String, price: Double, quantity: Int = 1, cnpj: String = ""): product {
+    private fun createProduct(
+        name: String,
+        price: Double,
+        quantity: Int = 1,
+        cnpj: String = "",
+    ): product {
         return product(cnpj = cnpj, name = name, photo = "", price = price, quantity = quantity)
     }
 
     @Test
     fun filter_withEmptyQuery_returnsAllItemsAndNotifiesTotal() {
-        val items = listOf(
-            createProduct("Frango", 1.0),
-            createProduct("Batata", 2.0)
-        )
+        val items =
+            listOf(
+                createProduct("Frango", 1.0),
+                createProduct("Batata", 2.0),
+            )
         var total = 0.0
         val adapter = ProductAdapter(items) { total = it }
 
@@ -28,11 +32,12 @@ class ProductAdapterTest {
 
     @Test
     fun filter_withQuery_filtersItemsIgnoringCase() {
-        val items = listOf(
-            createProduct("Frango", 1.0),
-            createProduct("Batata", 2.0),
-            createProduct("Bebida", 3.0)
-        )
+        val items =
+            listOf(
+                createProduct("Frango", 1.0),
+                createProduct("Batata", 2.0),
+                createProduct("Bebida", 3.0),
+            )
         var total = 0.0
         val adapter = ProductAdapter(items) { total = it }
 
@@ -44,10 +49,11 @@ class ProductAdapterTest {
 
     @Test
     fun filter_withNonMatchingQuery_returnsEmptyAndZeroTotal() {
-        val items = listOf(
-            createProduct("Frango", 1.0),
-            createProduct("Batata", 2.0)
-        )
+        val items =
+            listOf(
+                createProduct("Frango", 1.0),
+                createProduct("Batata", 2.0),
+            )
         var total = 0.0
         val adapter = ProductAdapter(items) { total = it }
 
@@ -59,10 +65,11 @@ class ProductAdapterTest {
 
     @Test
     fun getTotal_reflectsItemQuantityChanges() {
-        val items = listOf(
-            createProduct("Frango", 1.0),
-            createProduct("Batata", 2.0)
-        )
+        val items =
+            listOf(
+                createProduct("Frango", 1.0),
+                createProduct("Batata", 2.0),
+            )
         val adapter = ProductAdapter(items) {}
 
         // update quantities directly on items

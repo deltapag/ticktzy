@@ -10,8 +10,7 @@ import br.com.sttsoft.ticktzy.extensions.toRealFormatado
 import br.com.sttsoft.ticktzy.presentation.cashier.start.ActivityCashierBase
 import br.com.sttsoft.ticktzy.presentation.dialogs.ConfirmDialog
 
-class CashierSangriaActivity: ActivityCashierBase() {
-
+class CashierSangriaActivity : ActivityCashierBase() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -44,25 +43,26 @@ class CashierSangriaActivity: ActivityCashierBase() {
 
     fun doSangria() {
         if (verifyBeforeStart()) {
-            val dialog = ConfirmDialog ({ option ->
-                when (option) {
-                    "yes" -> {
-                        this.savePref("SANGRIA_MADE", this.getPref("SANGRIA_MADE", 0) + 1)
+            val dialog =
+                ConfirmDialog({ option ->
+                    when (option) {
+                        "yes" -> {
+                            this.savePref("SANGRIA_MADE", this.getPref("SANGRIA_MADE", 0) + 1)
 
-                        this.savePref("CAIXA_SANGRIA", this.getPref("CAIXA_SANGRIA", 0L) + currentValue)
+                            this.savePref("CAIXA_SANGRIA", this.getPref("CAIXA_SANGRIA", 0L) + currentValue)
 
-                        var valor = this.getPref("CAIXA", 0L)
-                        valor -= currentValue
+                            var valor = this.getPref("CAIXA", 0L)
+                            valor -= currentValue
 
-                        this.savePref("CAIXA",  valor)
+                            this.savePref("CAIXA", valor)
 
-                        PrinterUseCase(sunmiPrinterService).printInfo("SANGRIA", currentValue.toRealFormatado())
+                            PrinterUseCase(sunmiPrinterService).printInfo("SANGRIA", currentValue.toRealFormatado())
 
-                        finish()
+                            finish()
+                        }
+                        "no" -> {}
                     }
-                    "no" -> {}
-                }
-            },getString(R.string.confirm), getString(R.string.text_cashier_sangria_confirmation))
+                }, getString(R.string.confirm), getString(R.string.text_cashier_sangria_confirmation))
             dialog.show(supportFragmentManager, "ConfirmDialog")
         }
     }
