@@ -10,13 +10,14 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+private val boldOn = byteArrayOf(0x1B, 0x45, 0x01) // Negrito ON
+private val boldOff = byteArrayOf(0x1B, 0x45, 0x00) // Negrito OFF
+
 class PrinterUseCase(val printerService: SunmiPrinterService?) {
-    val boldOff = byteArrayOf(0x1B, 0x45, 0x00) // Negrito OFF
-    val boldOn = byteArrayOf(0x1B, 0x45, 0x01) // Negrito ON
 
     fun invoke() {
         printerService?.apply {
-            sendRAWData(boldOff, null)
+            sendRAWData(boldOn, null)
             lineWrap(1, null)
 
             setAlignment(1, null)
@@ -29,13 +30,13 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
             printText("TICKET 5\n", null)
 
             lineWrap(5, null)
-            sendRAWData(boldOff, null)
+            sendRAWData(boldOn, null)
         }
     }
 
     fun testPrinter() {
         printerService?.apply {
-            sendRAWData(boldOff, null)
+            sendRAWData(boldOn, null)
             lineWrap(1, null)
 
             setAlignment(1, null)
@@ -47,7 +48,7 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
             printText("NEGRITO\n", null)
 
             lineWrap(5, null)
-            sendRAWData(boldOff, null)
+            sendRAWData(boldOn, null)
         }
     }
 
@@ -58,8 +59,6 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
         valueCharged: Double,
     ) {
         printerService?.apply {
-            val boldOn = byteArrayOf(0x1B, 0x45, 0x01)
-            val boldOff = byteArrayOf(0x1B, 0x45, 0x00)
 
             val now = Date()
             val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm")
@@ -110,8 +109,6 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
         productPrice: Double,
     ) {
         printerService?.apply {
-            val boldOn = byteArrayOf(0x1B, 0x45, 0x01)
-            val boldOff = byteArrayOf(0x1B, 0x45, 0x00)
 
             val now = Date()
             val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm")
@@ -119,7 +116,7 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
 
             // Inicial
             setAlignment(1, null) // Centralizado
-            sendRAWData(boldOff, null)
+            sendRAWData(boldOn, null)
             setFontSize(20f, null)
             printText(infos.Pagamento.lojasSitef.firstOrNull()!!.nomeLoja + "\n", null)
             printText("$formattedDate\n", null)
@@ -153,8 +150,6 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
         value: String,
     ) {
         printerService?.apply {
-            val boldOn = byteArrayOf(0x1B, 0x45, 0x01)
-            val boldOff = byteArrayOf(0x1B, 0x45, 0x00)
 
             // Inicial
             setAlignment(1, null) // Centralizado
@@ -187,8 +182,6 @@ class PrinterUseCase(val printerService: SunmiPrinterService?) {
 
     fun printFinish(context: Context) {
         printerService?.apply {
-            val boldOn = byteArrayOf(0x1B, 0x45, 0x01)
-            val boldOff = byteArrayOf(0x1B, 0x45, 0x00)
 
             // Inicial
             setAlignment(1, null) // Centralizado

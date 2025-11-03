@@ -19,7 +19,7 @@ class SitefUseCase(var context: Context) {
         i.putExtra("operador", "mSiTef")
         i.putExtra("timeoutColeta", "30")
 
-        infos?.apply {
+        infos.apply {
             i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip + ":" + infos.Pagamento.sitefPublico.porta)
             /*if (isTLSEnabled) {
                 i.putExtra("enderecoSitef", "tls-prod.fiservapp.com:443")
