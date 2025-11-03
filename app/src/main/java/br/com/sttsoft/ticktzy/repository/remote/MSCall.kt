@@ -37,8 +37,8 @@ class MSCall {
 
         private val retrofit = builder.build()
 
-        fun <S> createService(serviceClass: Class<S>?): S {
-            return retrofit.create<S>(serviceClass)
+        fun <S> createService(serviceClass: Class<S>): S {
+            return retrofit.create(serviceClass)
         }
     }
 }
