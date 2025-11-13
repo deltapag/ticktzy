@@ -21,7 +21,7 @@ class GetDadosSubUseCase {
             append("09").append(count(useValidInformation(s.idEstabelecimento))).append(useValidInformation(s.idEstabelecimento))
             append("10").append(count(useValidInformation(s.email))).append(useValidInformation(s.email))
             append("11").append(count(useValidInformation(s.razaoSocial))).append(useValidInformation(s.razaoSocial))
-            append("12").append(count(useValidInformation(s.tipoPessoa))).append(useValidInformation(s.tipoPessoa))
+            append("12").append(count(useValidInformation(s.tipoPessoa))).append(verifyTypeAccount(s.cnpj, s.tipoPessoa))
         }
     }
 
@@ -39,6 +39,21 @@ class GetDadosSubUseCase {
             return "0" + data.length
         } else {
             return data.length.toString()
+        }
+    }
+
+    private fun verifyTypeAccount(data: String, accountInformed: String): String {
+        var accountGenerated = ""
+        if (data.length < 12) {
+            accountGenerated = "F"
+        } else {
+            accountGenerated = "J"
+        }
+
+        return if (accountInformed.equals(accountGenerated)) {
+            accountInformed
+        } else {
+            accountGenerated
         }
     }
 }

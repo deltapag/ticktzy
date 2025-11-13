@@ -3,6 +3,7 @@ package br.com.sttsoft.ticktzy.domain
 import android.content.Context
 import android.content.Intent
 import androidx.collection.intSetOf
+import br.com.sttsoft.ticktzy.BuildConfig
 import br.com.sttsoft.ticktzy.extensions.getPref
 import br.com.sttsoft.ticktzy.extensions.isUsingCellular
 import br.com.sttsoft.ticktzy.extensions.removeSpecialChars
@@ -20,14 +21,18 @@ class SitefUseCase(var context: Context) {
         i.putExtra("operador", "mSiTef")
         i.putExtra("timeoutColeta", "30")
 
+        //val endpoint = ResolveSitefEndpointUseCase(context).resolve()
+        val ipChip = infos.ipChip
+
         infos?.apply {
 
-            i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
-            /*if (isTLSEnabled) {
-                i.putExtra("enderecoSitef", "tls-prod.fiservapp.com:443")
-            } else {
-                i.putExtra("enderecoSitef", infos.Pagamento.sitefPublico.ip+":"+infos.Pagamento.sitefPublico.porta)
-            }*/
+            val publicHost = "${Pagamento.sitefPublico.ip}:${Pagamento.sitefPublico.porta}"
+
+            val endereco = when {
+                ipChip != null -> ipChip
+                else              -> publicHost
+            }
+            i.putExtra("enderecoSitef", endereco)
 
             i.putExtra("empresaSitef", infos.Pagamento.lojasSitef.first().codigoLojaSitef)
             i.putExtra("cnpj_automacao", infos.Pagamento.lojasSitef.first().cnpj.removeSpecialChars())
@@ -35,11 +40,18 @@ class SitefUseCase(var context: Context) {
             i.putExtra("dadosSubAdqui", GetDadosSubUseCase().getDadosSub(infos))
         }
 
-        if (VerifyTlsComunicationUseCase(context).comunicacaoPermiteTls()) {
+        // 2) Define comExterna
+        when {
+            ipChip != null -> i.putExtra("comExterna", "0") // APN privada por chip
+            else -> i.putExtra("comExterna", "1")
+        }
+
+        /*
+        if (!BuildConfig.DEBUG && VerifyTlsComunicationUseCase(context).comunicacaoPermiteTls()) {
             i.putExtra("comExterna", "1")
         } else {
             i.putExtra("comExterna", "0")
-        }
+        }*/
 
         /*
         if (isTLSEnabled) {

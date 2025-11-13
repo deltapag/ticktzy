@@ -7,6 +7,7 @@ data class InfoResponse(
     val headerEstabelecimento: Boolean,
     val headerValor: Boolean,
     val maxDiasRelatorio: Int,
+    val ipChip: String?,
     val AtualizacaoRemota: AtualizacaoRemota,
     val Pagamento: Pagamento,
     val App: App

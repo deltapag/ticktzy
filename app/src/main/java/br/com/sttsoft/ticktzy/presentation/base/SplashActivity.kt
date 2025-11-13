@@ -36,7 +36,7 @@ class SplashActivity: BaseActivity() {
 
         defineHomeApp()
 
-        val infos = TerminalnfosUseCase().invoke()
+        val infos = TerminalnfosUseCase().invoke(this)
 
         binding.tvSerial.text = infos.NumeroSerie
 
